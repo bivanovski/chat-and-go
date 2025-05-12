@@ -1,7 +1,9 @@
 # Ignore user-specific files
-.vscode/
+.vs/
 *.user
 *.suo
+.vscode/
+translator-chat-app/.vscode/
 
 # Ignore build outputs
 **/bin/
