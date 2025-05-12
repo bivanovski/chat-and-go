@@ -1,0 +1,132 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f8fa; // Optional: subtle background
+  overflow: auto;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* Stylish SnackBar styles */
+.animated-snackbar {
+  animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from { 
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Base styles for snackbar */
+.mat-mdc-snack-bar-container {
+  margin: 16px !important;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  padding: 16px 18px !important;
+  min-width: 320px !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Error snackbar styling - REMOVED ICONS */
+.error-snackbar .mdc-snackbar__surface {
+  background: rgb(255, 255, 255) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(252,245,245,1) 100%) !important;
+  border-left: 4px solid #d32f2f;
+}
+
+.error-snackbar .mat-mdc-snack-bar-label {
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+.error-snackbar .mat-mdc-button {
+  color: #d32f2f !important;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+}
+
+.error-snackbar .mat-mdc-button:hover {
+  background-color: rgba(211, 47, 47, 0.1);
+}
+
+/* Success snackbar styling - REMOVED ICONS */
+.success-snackbar .mdc-snackbar__surface {
+  background: rgb(255, 255, 255) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(242,251,244,1) 100%) !important;
+  border-left: 4px solid #43a047;
+}
+
+.success-snackbar .mat-mdc-snack-bar-label {
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+.success-snackbar .mat-mdc-button {
+  color: #43a047 !important;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+}
+
+.success-snackbar .mat-mdc-button:hover {
+  background-color: rgba(67, 160, 71, 0.1);
+}
+
+/* Make buttons more visible with hover effects */
+.mat-mdc-snack-bar-container .mat-mdc-button {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+}
+
+// Add dialog styling
+.custom-dialog-container .mat-dialog-container {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+// For Angular Material v15+ use:
+.custom-dialog-container .mdc-dialog__surface {
+  padding: 16px;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.messages-area {
+  scroll-behavior: smooth;
+}

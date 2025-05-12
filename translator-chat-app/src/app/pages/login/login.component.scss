@@ -1,0 +1,254 @@
+.login-page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0396FF 0%, #AB82FF 100%);
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .animated-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(255,255,255,0.2) 0%, transparent 40%),
+      radial-gradient(circle at 75% 75%, rgba(255,255,255,0.2) 0%, transparent 40%);
+  }
+  
+  .login-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  }
+  
+  .login-header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  
+// Enhanced logo styling with zoom effect
+.logo {
+  display: flex;
+  flex-direction: column;  // Change to column to stack logo above title
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  
+
+  .logo-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; // Contains the zoomed logo
+    height: 100px; // Set fixed height
+    width: 100px;  // Set fixed width - adjust as needed
+    border-radius: 8px; // Rounded corners
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.12); // Soft shadow
+    
+    // Add glow effect
+    &::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+      border-radius: 12px;
+      z-index: -1;
+      animation: pulse 3s infinite;
+    }
+  }
+  
+  .logo-image {
+    width: 150%; // Makes the logo appear zoomed (larger than container)
+    height: auto;
+    object-fit: contain; // Maintain aspect ratio
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+    
+    // Optional hover effect for extra zoom
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.app-title {
+  margin: 16px 0 0 0;
+  font-size: 32px;
+  font-weight: 700;
+  background-color: #0396FF;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+// Pulsing animation for the glow
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+}
+
+.login-subtitle {
+  margin: 4px 0 0;
+  color: #5f6368;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  background: none;
+  -webkit-text-fill-color: #5f6368;
+}
+
+.login-header {
+  margin-bottom: 32px;
+}
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .login-button {
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+    position: relative;
+    
+    .button-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      
+      mat-icon, span {
+        margin-right: 8px;
+      }
+      
+      span {
+        margin-left: 4px;
+      }
+    }
+    
+    .spinner-center {
+      margin-right: 8px;
+    }
+  }
+  
+  .actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .forgot-password {
+    color: #3f51b5;
+    text-decoration: none;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .register-section {
+    margin-top: 2rem;
+    text-align: center;
+    position: relative;
+    
+    .divider {
+      display: block;
+      text-align: center;
+      color: #777;
+      margin-bottom: 1rem;
+      position: relative;
+      font-size: 0.9rem;
+      
+      &::before, &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        height: 1px;
+        width: 25%;
+        background-color: #ddd;
+      }
+      
+      &::before {
+        left: 0;
+      }
+      
+      &::after {
+        right: 0;
+      }
+    }
+    
+    .register-button {
+      width: 100%;
+      height: 44px;
+      font-weight: 500;
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 1.5rem;
+    }
+    
+    .actions-row {
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+  }
+
+  .register-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .register-text-link {
+    color: #3f51b5;
+    text-decoration: none;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+

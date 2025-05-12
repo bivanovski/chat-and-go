@@ -1,0 +1,31 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>Select Your Language</h2>
+
+  <div mat-dialog-content>
+    <p class="dialog-subtitle">
+      Choose your preferred language for messages and translations
+    </p>
+
+    <mat-form-field appearance="outline" class="language-select">
+      <mat-label>Language</mat-label>
+      <mat-select [(ngModel)]="selectedLanguage">
+        <mat-option *ngFor="let lang of getLanguagesBySupport(true)" [value]="lang.code">
+          {{ lang.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-stroked-button mat-dialog-close class="cancel-button">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="selectedLanguage"
+    >
+      Apply
+    </button>
+  </div>
+</div>

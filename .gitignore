@@ -1,0 +1,17 @@
+# Ignore user-specific files
+.vscode/
+*.user
+*.suo
+
+# Ignore build outputs
+**/bin/
+**/obj/
+**/dist/
+**/node_modules/
+
+# Ignore secrets
+**/appsettings.Development.json
+
+# OS files
+.DS_Store
+Thumbs.db

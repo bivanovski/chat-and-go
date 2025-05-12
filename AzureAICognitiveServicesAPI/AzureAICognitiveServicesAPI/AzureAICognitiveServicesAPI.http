@@ -1,0 +1,6 @@
+@AzureAICognitiveServicesAPI_HostAddress = http://localhost:5239
+
+GET {{AzureAICognitiveServicesAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

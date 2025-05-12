@@ -1,0 +1,25 @@
+.language-dropdown {
+  width: 100%;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.language-code {
+  opacity: 0.6;
+  font-size: 0.8em;
+}
+
+::ng-deep .mat-mdc-select-panel {
+  max-height: 280px !important;
+}
+
+::ng-deep .mat-mdc-option {
+  height: auto !important;
+  line-height: 1.2;
+  padding: 12px 16px;
+}

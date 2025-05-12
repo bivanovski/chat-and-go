@@ -1,0 +1,520 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\services\\speechservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\services\\speechservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\services\\azurelanguageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\services\\azurelanguageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\messageaudiorequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\messageaudiorequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\azurelanguage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\azurelanguage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\controllers\\messagecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\controllers\\messagecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\migrations\\appdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\migrations\\appdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\migrations\\20250406144745_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\migrations\\20250406144745_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\azureaicognitiveservicesapi.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\hubs\\messagehub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\hubs\\messagehub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\services\\translatorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\services\\translatorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\messagedelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\messagedelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\messagesentrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\messagesentrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\models\\updatelanguagerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\models\\updatelanguagerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|c:\\users\\bojanivanovski\\documents\\api\\azureaicognitiveservicesapi\\azureaicognitiveservicesapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DB4D84-E191-4F6F-810C-048B6E9841AC}|AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.csproj|solutionrelative:azureaicognitiveservicesapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 32,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:140:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:151:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:154:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:148:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:149:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:152:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:153:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:150:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:146:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:142:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:140:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:141:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:143:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{6324226f-61b6-4f28-92ee-18d4b5fe1e48}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\appsettings.Development.json",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-12T19:44:13.37Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AzureLanguageService.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Services\\AzureLanguageService.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Services\\AzureLanguageService.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Services\\AzureLanguageService.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Services\\AzureLanguageService.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwBkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T19:29:05.638Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SpeechService.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Services\\SpeechService.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Services\\SpeechService.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Services\\SpeechService.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Services\\SpeechService.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAYwBAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T18:27:23.916Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\appsettings.json",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\appsettings.json",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-04-06T14:39:06.474Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MessageAudioRequest.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\MessageAudioRequest.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\MessageAudioRequest.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\MessageAudioRequest.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\MessageAudioRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T18:50:21.846Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Message.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\Message.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\Message.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\Message.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\Message.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-22T10:21:11.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "LoginRequest.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\LoginRequest.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\LoginRequest.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\LoginRequest.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\LoginRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-19T12:29:01.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AzureLanguage.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\AzureLanguage.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\AzureLanguage.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\AzureLanguage.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\AzureLanguage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T19:27:22.432Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MessageController.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Controllers\\MessageController.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Controllers\\MessageController.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Controllers\\MessageController.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Controllers\\MessageController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAQwPkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T12:08:21.436Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Controllers\\UserController.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAHwAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-06T15:47:19.742Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AppDbContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Migrations\\AppDbContextModelSnapshot.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Migrations\\AppDbContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Migrations\\AppDbContextModelSnapshot.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Migrations\\AppDbContextModelSnapshot.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T12:21:07.862Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-01T19:22:29.357Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "AzureAICognitiveServicesAPI.http",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.http",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.http",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.http",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-05-07T12:20:48.074Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "20250406144745_InitialCreate.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Migrations\\20250406144745_InitialCreate.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Migrations\\20250406144745_InitialCreate.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Migrations\\20250406144745_InitialCreate.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Migrations\\20250406144745_InitialCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T12:21:03.981Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "TranslatorService.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Services\\TranslatorService.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Services\\TranslatorService.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Services\\TranslatorService.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Services\\TranslatorService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T12:41:47.772Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "MessageHub.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Hubs\\MessageHub.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Hubs\\MessageHub.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Hubs\\MessageHub.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Hubs\\MessageHub.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T09:16:06.656Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "MessageDelivery.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\MessageDelivery.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\MessageDelivery.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\MessageDelivery.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\MessageDelivery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T20:38:54.872Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "RegisterRequest.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\RegisterRequest.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\RegisterRequest.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\RegisterRequest.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\RegisterRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-19T12:30:14.87Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\User.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\User.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T14:35:41.554Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "MessageSentRequest.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\MessageSentRequest.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\MessageSentRequest.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\MessageSentRequest.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\MessageSentRequest.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAYwAUAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T12:18:34.862Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "UpdateLanguageRequest.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\UpdateLanguageRequest.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Models\\UpdateLanguageRequest.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Models\\UpdateLanguageRequest.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Models\\UpdateLanguageRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T12:14:53.986Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Program.cs",
+              "RelativeDocumentMoniker": "AzureAICognitiveServicesAPI\\Program.cs",
+              "ToolTip": "C:\\Users\\BojanIvanovski\\Documents\\API\\AzureAICognitiveServicesAPI\\AzureAICognitiveServicesAPI\\Program.cs",
+              "RelativeToolTip": "AzureAICognitiveServicesAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-06T14:39:34.64Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

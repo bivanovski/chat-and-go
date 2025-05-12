@@ -1,0 +1,15 @@
+<mat-form-field appearance="outline" class="language-dropdown">
+    <mat-select 
+      [value]="selectedLanguage" 
+      (selectionChange)="onChange($event.value)"
+      aria-label="Select your preferred language">
+      <mat-option *ngFor="let lang of languages" [value]="lang.code">
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <span>{{ lang.name }}</span>
+            <span style="padding: 2px 6px; border-radius: 4px; font-size: 12px;">
+              {{ lang.code.toUpperCase() }}
+            </span>
+          </div>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
