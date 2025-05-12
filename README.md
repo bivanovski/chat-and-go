@@ -1,6 +1,6 @@
-# ChatnGo - Real-time Translated Chat
+# ChatnGo - Real-time Speech and Text Translating Instant Messaging App
 
-ChatnGo is a real-time chat application with automatic translation capabilities, powered by Azure AI Cognitive Services. Users can communicate in their preferred language while messages are automatically translated for recipients.
+ChatnGo is a real-time chat application with automatic translation capabilities, powered by Azure AI Cognitive Services. Users can communicate in their preferred language while text and vocie messages are automatically translated for recipients. 
 
 ---
 
@@ -90,15 +90,7 @@ The project consists of two main parts:
    npm install
    ```
 
-3. Create `src/environments/environment.development.ts`:
-   ```ts
-   export const environment = {
-     production: false,
-     apiBaseUrl: 'https://localhost:5001/api' // adjust as needed
-   };
-   ```
-
-4. Run the development server:
+3. Run the development server:
    ```bash
    ng serve
    ```
@@ -110,4 +102,4 @@ The app will be available at [http://localhost:4200](http://localhost:4200)
 ## 🌍 Azure Services Used
 
 - **Azure Translator** – for message translation
-- **Azure Speech Services** – for text-to-speech and speech-to-text
+- **Azure Speech Translation** – for text-to-speech and speech-to-text translation in one go.
