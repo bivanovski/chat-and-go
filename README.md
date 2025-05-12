@@ -1,6 +1,6 @@
 # ChatnGo - Real-time Speech and Text Translating Instant Messaging App
 
-ChatnGo is a real-time chat application with automatic translation capabilities, powered by Azure AI Cognitive Services. Users can communicate in their preferred language while text and vocie messages are automatically translated for recipients. 
+ChatnGo is a real-time instant messaging application with automatic translation capabilities, powered by Azure AI Cognitive Services. Users can communicate in their preferred language while text and vocie messages are automatically translated for recipients. 
 
 ---
 
