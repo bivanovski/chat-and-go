@@ -20,7 +20,7 @@ The project consists of two main parts:
 - 🌐 Automatic translation between 100+ languages
 - 🔊 Text-to-speech for audio messages
 - 👤 User language preference settings
-- 🔐 Optional user authentication
+- 🔐 User authentication
 - 💾 Persistent chat history
 
 ---
