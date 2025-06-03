@@ -37,11 +37,15 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("EnableSwagger", false))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Add a health check endpoint
+app.MapGet("/", () => "ChatnGo API is running!");
+app.MapGet("/health", () => "Healthy");
 
 app.UseHttpsRedirection();
 
