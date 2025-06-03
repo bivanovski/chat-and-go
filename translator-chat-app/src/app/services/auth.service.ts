@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { tap } from 'rxjs/operators';
 
 interface User {
   id?: number;
@@ -13,8 +13,8 @@ interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7160/users';
-
+  private baseUrl = 'https://localhost:7160';
+  private apiUrl = `${this.baseUrl}/users`;
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +22,11 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/login`, {
       username,
       password
-      });
+    }).pipe(
+      tap(user => {
+        sessionStorage.setItem('user', JSON.stringify(user));
+      })
+    );
   }
 
   register(username: string, password: string, languageCode: string): Observable<User> {
@@ -36,6 +40,10 @@ export class AuthService {
   getCurrentUser(): User | null {
     const user = sessionStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getCurrentUser();
   }
 
   logout() {

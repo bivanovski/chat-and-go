@@ -30,105 +30,121 @@
     </div>
   </div>
 
-  <div class="loading-container" *ngIf="loading">
-    <mat-spinner color="primary" diameter="48"></mat-spinner>
-    <div class="loading-text">Loading messages...</div>
-  </div>
-
-  <!-- Messages area -->
-  <div class="messages-area" #scrollMe *ngIf="!loading">
-    <ng-container *ngFor="let msg of messages; let i = index">
-      <div *ngIf="shouldShowDateDivider(i)" class="date-divider">
-        {{ getDateLabel(msg.timestamp) }}
-      </div>
-      <div
-        class="message-wrapper"
-        [ngClass]="{
-          'own-message': msg.senderUsername === currentUser?.username
-        }"
-      >
-        <div
-          class="message-avatar"
-          *ngIf="msg.senderUsername !== currentUser?.username"
-        >
-          {{ msg.senderUsername?.charAt(0).toUpperCase() }}
-        </div>
-
-        <div class="message-bubble">
-          <div
-            class="message-sender"
-            *ngIf="msg.senderUsername !== currentUser?.username"
-          >
-            {{ msg.senderUsername }}
-          </div>
-
-          <!-- Text message -->
-          <div class="message-content" *ngIf="!msg.audioContent">
-            {{ msg.translatedText }}
-          </div>
-
-          <!-- Audio message (only if translation succeeded) -->
-          <div class="audio-content" *ngIf="msg.audioContent">
-            <div class="audio-message-container">
-              <button
-                mat-icon-button
-                color="primary"
-                class="audio-play-btn"
-                (click)="playOrPauseAudio(msg.audioContent, i)"
-                [attr.aria-label]="
-                  currentPlayingIndex === i ? 'Pause audio' : 'Play audio'
-                "
-              >
-                <mat-icon>
-                  {{
-                    currentPlayingIndex === i
-                      ? "pause_circle_filled"
-                      : "play_circle_filled"
-                  }}
-                </mat-icon>
-              </button>
-              <div class="audio-waveform">
-                <span
-                  class="wave-bar"
-                  *ngFor="let bar of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                ></span>
-              </div>
-              <div class="audio-info">
-                <span
-                  class="audio-duration"
-                  *ngIf="msg.audioDuration && msg.audioDuration > 0"
-                >
-                  {{ formatAudioDuration(msg.audioDuration) }}
-                </span>
-                <span class="audio-transcription" *ngIf="msg.translatedText">
-                  "{{ msg.translatedText }}"
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="message-time">
-            {{ msg.timestamp | date : "shortTime" }}
-            <mat-icon
-              *ngIf="msg.senderUsername === currentUser?.username"
-              class="status-icon"
-              >done_all</mat-icon
-            >
-          </div>
-        </div>
-      </div>
+  <!-- Skeleton loaders during initial loading -->
+  <div class="messages-area" #scrollMe (scroll)="onScroll($event)">
+    <!-- Loading more indicator -->
+    <div class="loading-more" *ngIf="isLoadingMore">
+      <mat-spinner [diameter]="20"></mat-spinner>
+      <span>Loading earlier messages...</span>
+    </div>
+    
+    <!-- No more messages indicator -->
+    <div class="no-more-messages" *ngIf="!isLoadingMore && !hasMoreMessages && messages.length > 0">
+      <span>No more messages</span>
+    </div>
+    
+    <!-- Skeleton loaders -->
+    <ng-container *ngIf="loading">
+      <app-message-skeleton *ngFor="let i of [].constructor(skeletonCount); let idx = index" 
+                           [isOutgoing]="idx % 2 === 0">
+      </app-message-skeleton>
     </ng-container>
 
-    <!-- Typing indicator -->
-    <ng-container *ngFor="let username of getTypingUsernames()">
-      <div class="message-wrapper typing-bubble" *ngIf="username !== currentUser?.username">
-        <div class="message-avatar typing-avatar">
-          {{ username.charAt(0).toUpperCase() }}
+    <!-- Messages area -->
+    <ng-container *ngIf="!loading">
+      <ng-container *ngFor="let msg of messages; let i = index">
+        <div *ngIf="shouldShowDateDivider(i)" class="date-divider">
+          {{ getDateLabel(msg.timestamp) }}
         </div>
-        <div class="message-bubble typing-message">
-          <span class="dot-typing"><span></span></span>
+        <div
+          class="message-wrapper"
+          [ngClass]="{
+            'own-message': msg.senderUsername === currentUser?.username
+          }"
+        >
+          <div
+            class="message-avatar"
+            *ngIf="msg.senderUsername !== currentUser?.username"
+          >
+            {{ msg.senderUsername?.charAt(0).toUpperCase() }}
+          </div>
+
+          <div class="message-bubble">
+            <div
+              class="message-sender"
+              *ngIf="msg.senderUsername !== currentUser?.username"
+            >
+              {{ msg.senderUsername }}
+            </div>
+
+            <!-- Text message -->
+            <div class="message-content" *ngIf="!msg.audioContent">
+              {{ msg.translatedText }}
+            </div>
+
+            <!-- Audio message (only if translation succeeded) -->
+            <div class="audio-content" *ngIf="msg.audioContent">
+              <div class="audio-message-container">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  class="audio-play-btn"
+                  (click)="playOrPauseAudio(msg.audioContent, i)"
+                  [attr.aria-label]="
+                    currentPlayingIndex === i ? 'Pause audio' : 'Play audio'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      currentPlayingIndex === i
+                        ? "pause_circle_filled"
+                        : "play_circle_filled"
+                    }}
+                  </mat-icon>
+                </button>
+                <div class="audio-waveform">
+                  <span
+                    class="wave-bar"
+                    *ngFor="let bar of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                  ></span>
+                </div>
+                <div class="audio-info">
+                  <span
+                    class="audio-duration"
+                    *ngIf="msg.audioDuration && msg.audioDuration > 0"
+                  >
+                    {{ formatAudioDuration(msg.audioDuration) }}
+                  </span>
+                  <span class="audio-transcription" *ngIf="msg.translatedText">
+                    "{{ msg.translatedText }}"
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="message-time">
+              {{ msg.timestamp | date : "shortTime" }}
+              <mat-icon
+                *ngIf="msg.senderUsername === currentUser?.username"
+                class="status-icon"
+                >done_all</mat-icon
+              >
+            </div>
+          </div>
         </div>
-      </div>
+      </ng-container>
+
+      <!-- Typing indicator -->
+      <ng-container *ngFor="let username of getTypingUsernames()">
+        <div class="message-wrapper typing-bubble" *ngIf="username !== currentUser?.username">
+          <div class="message-avatar typing-avatar">
+            {{ username.charAt(0).toUpperCase() }}
+          </div>
+          <div class="message-bubble typing-message">
+            <span class="dot-typing"><span></span></span>
+          </div>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 

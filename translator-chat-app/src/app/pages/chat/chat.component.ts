@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,6 +17,9 @@ import { LanguageDialogComponent } from '../../dialogs/language-dialog/language-
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Subscription, BehaviorSubject, timer } from 'rxjs';
+import { debounce } from 'rxjs/operators';
+import { MessageSkeletonComponent } from '../../message-skeleton/message-skeleton.component';
 
 @Component({
   selector: 'app-chat',
@@ -32,12 +35,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatTooltipModule,
     MatDialogModule,
     FlexLayoutModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MessageSkeletonComponent 
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollMe') scrollContainer!: ElementRef;
   currentUser: any;
   messages: any[] = [];
@@ -45,6 +49,19 @@ export class ChatComponent implements OnInit {
   recordingDuration = 0;
   private recordingTimer: any = null;
   loading = true;
+  private shouldScrollToBottom = false;
+  private previousLoadingState = true;
+  
+  // For progressive loading
+  pageSize = 20;
+  currentPage = 1;
+  hasMoreMessages = true;
+  isLoadingMore = false;
+  
+  // For skeleton loaders
+  skeletonCount = 5;
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+  private messageSubscription?: Subscription;
 
   isRecording = false;
   audioBlob: Blob | null = null;
@@ -66,7 +83,12 @@ export class ChatComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    // Set up loading subject with debounce to prevent flickering
+    this.loadingSubject
+      .pipe(debounce(() => timer(300)))
+      .subscribe(isLoading => this.loading = isLoading);
+  }
 
   languageMap: Record<string, string> = {};
 
@@ -74,7 +96,7 @@ export class ChatComponent implements OnInit {
     const stored = sessionStorage.getItem('user');
     this.currentUser = stored ? JSON.parse(stored) : null;
 
-    this.loadMessages();
+    this.loadMessages(true);
 
     this.languageService.getLanguages().subscribe({
       next: (langs) => {
@@ -86,14 +108,15 @@ export class ChatComponent implements OnInit {
     });
 
     this.signalRService.connect((textData) => {
-      console.log('💬 Text message received:', textData);
-      this.messages.push({
-        senderUsername: textData.senderUsername ?? textData.SenderUsername ?? textData.sender,
-        originalText: textData.originalText ?? textData.OriginalText,
-        translatedText: textData.translatedText ?? textData.TranslatedText,
-        timestamp: textData.timestamp ?? textData.Timestamp,
-      });
+    console.log('💬 Text message received:', textData);
+    this.messages.push({
+      senderUsername: textData.senderUsername ?? textData.SenderUsername ?? textData.sender,
+      originalText: textData.originalText ?? textData.OriginalText,
+      translatedText: textData.translatedText ?? textData.TranslatedText,
+      timestamp: textData.timestamp ?? textData.Timestamp,
     });
+    this.shouldScrollToBottom = true; // Set flag to scroll after view update
+  });
 
     this.signalRService.onAudioMessage((audioData) => {
       console.log('🎵 Audio message received:', audioData);
@@ -143,7 +166,7 @@ export class ChatComponent implements OnInit {
         console.log('Ignoring duplicate self message', audioData);
       }
     
-      setTimeout(() => this.scrollToBottom(), 100);
+      this.shouldScrollToBottom = true;
     });
     
     this.signalRService.onTypingStatusUpdate(
@@ -156,6 +179,16 @@ export class ChatComponent implements OnInit {
         }
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
+    this.signalRService.disconnect();
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+    }
   }
 
   shouldShowDateDivider(index: number): boolean {
@@ -217,31 +250,92 @@ export class ChatComponent implements OnInit {
     this.signalRService.sendTypingStatus(false);
   }
 
-  scrollToBottom(): void {
-    try {
-      this.scrollContainer.nativeElement.scrollTop =
-        this.scrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+   ngAfterViewChecked() {
+    // Check if loading state changed from true to false (messages finished loading)
+    if (this.previousLoadingState === true && this.loading === false) {
+      this.scrollToBottom();
+    }
+    
+    // Also scroll if flag is set (for new messages)
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
+    
+    // Update previous loading state
+    this.previousLoadingState = this.loading;
   }
 
-  loadMessages() {
-    this.loading = true; // Set loading state to true before fetching messages
+  scrollToBottom(): void {
+    try {
+      if (this.scrollContainer && this.scrollContainer.nativeElement) {
+        this.scrollContainer.nativeElement.scrollTop = 
+          this.scrollContainer.nativeElement.scrollHeight;
+        console.log('Scrolled to bottom:', this.scrollContainer.nativeElement.scrollHeight);
+      }
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
+    }
+  }
+
+  onScroll(event: any): void {
+    // Load more messages when scrolling near the top
+    if (event.target.scrollTop < 100 && this.hasMoreMessages && !this.isLoadingMore) {
+      this.loadMoreMessages();
+    }
+  }
+
+loadMessages(initial = true) {
+    if (initial) {
+      this.loadingSubject.next(true);
+      this.currentPage = 1;
+    } else {
+      this.isLoadingMore = true;
+    }
     
-    this.messageService.getMessages(this.currentUser.username).subscribe({
+    this.messageService.getMessages(this.currentUser.username, this.currentPage, this.pageSize).subscribe({
       next: (msgs) => {
-        this.messages = msgs;
-        this.loading = false; // Set loading to false when messages are loaded
-        setTimeout(() => this.scrollToBottom(), 100);
+        if (initial) {
+          this.messages = msgs;
+          this.loadingSubject.next(false);
+          // We'll let ngAfterViewChecked handle scrolling after loading completes
+        } else {
+          // Save scroll position before adding older messages
+          const scrollContainer = this.scrollContainer.nativeElement;
+          const oldScrollHeight = scrollContainer.scrollHeight;
+          const oldScrollTop = scrollContainer.scrollTop;
+          
+          // Prepend older messages
+          this.messages = [...msgs, ...this.messages];
+          this.isLoadingMore = false;
+          
+          // Restore scroll position relative to new content after next view check
+          setTimeout(() => {
+            const newScrollHeight = scrollContainer.scrollHeight;
+            const scrollOffset = newScrollHeight - oldScrollHeight;
+            scrollContainer.scrollTop = oldScrollTop + scrollOffset;
+          }, 0);
+        }
+        
+        // Check if we have more messages to load
+        this.hasMoreMessages = msgs.length >= this.pageSize;
+        this.currentPage++;
       },
       error: (error) => {
         console.error('Error loading messages:', error);
-        this.loading = false; // Also set loading to false on error
-        this.snackBar.open('Failed to load messages', 'Dismiss', {
-          duration: 5000,
-          panelClass: ['error-snackbar']
-        });
+        this.loadingSubject.next(false);
+        this.isLoadingMore = false;
+        // Display error notification
       }
     });
+  }
+  
+
+  loadMoreMessages(): void {
+    if (this.hasMoreMessages && !this.isLoadingMore) {
+      this.isLoadingMore = true;
+      this.loadMessages(false);
+    }
   }
 
   sendMessage() {
@@ -254,7 +348,9 @@ export class ChatComponent implements OnInit {
 
     this.messageService.sendMessage(payload).subscribe(() => {
       this.newMessage = '';
+      this.stopTypingIndicator();
     });
+    this.shouldScrollToBottom = true;
   }
 
   // --- AUDIO RECORDING UI LOGIC ---
@@ -379,6 +475,7 @@ export class ChatComponent implements OnInit {
         }
       }
     });
+    this.shouldScrollToBottom = true;
   }
   
   // WAV encoding helper

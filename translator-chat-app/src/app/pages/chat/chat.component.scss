@@ -322,7 +322,8 @@
   }
 }
 
-// Message input field fixes
+// Replace the existing .message-field styles with these enhanced ones:
+
 .message-field {
   width: 100%;
   
@@ -332,8 +333,9 @@
   
   // Adjust vertical padding to center the text better
   ::ng-deep .mat-mdc-form-field-infix {
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    min-height: 24px;
   }
 
   ::ng-deep .mat-mdc-text-field-wrapper {
@@ -342,7 +344,7 @@
   }
   
   ::ng-deep .mat-mdc-form-field-flex {
-    min-height: 46px;
+    min-height: 56px;
     align-items: center;
   }
   
@@ -363,15 +365,34 @@
     border-width: 0 !important;
   }
   
-  // Fix for input hover/focus background color
+  // Fix for input hover/focus background color and center the input text
   ::ng-deep .mat-mdc-input-element {
     caret-color: #6366F1;
     margin-top: 0;
+    transition: text-align 0.3s ease;
+    line-height: 24px;
+    
+    &:focus {
+      text-align: left;
+    }
+    
+    &::placeholder {
+      opacity: 0.7;
+      font-weight: 300;
+      color: #9ca3af;
+      line-height: 24px;
+      transform: translateY(0);
+    }
+    
+    &:focus::placeholder {
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+    }
   }
   
-  // Fix placeholder vertical position
+  // Fix placeholder vertical position and center it
   ::ng-deep .mat-mdc-form-field-label {
-    margin-top: -2px;
+    display: none !important; // Hide the floating label entirely
   }
   
   .hint-icon {
@@ -1071,4 +1092,35 @@
   opacity: 0.7;
   pointer-events: none;
   filter: grayscale(30%);
+}
+
+// Add these styles to your existing CSS
+
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  gap: 8px;
+  
+  span {
+    font-size: 14px;
+    color: #6b7280;
+  }
+}
+
+.no-more-messages {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(0,0,0,0.03);
+  border-radius: 8px;
+}
+
+// For the message skeleton component
+app-message-skeleton {
+  display: block;
+  margin: 8px 0;
 }

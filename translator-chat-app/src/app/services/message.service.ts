@@ -6,13 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MessageService {
-  private apiUrl = 'https://localhost:7160/messages';
+  private baseUrl = 'https://localhost:7160';
+  private apiUrl = `${this.baseUrl}/messages`;
 
   constructor(private http: HttpClient) {}
 
   // Get translated messages for a user
-  getMessages(username: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/received/${username}`);
+   getMessages(username: string, page: number = 1, pageSize: number = 20): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/received/${username}`,
+      { params: { page: page.toString(), pageSize: pageSize.toString() } }
+    );
   }
 
   // Send a new text message
@@ -24,5 +28,4 @@ export class MessageService {
   sendAudio(formData: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/send-audio`, formData);
   }
-  
 }

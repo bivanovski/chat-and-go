@@ -1,0 +1,6 @@
+<!-- message-skeleton.component.html -->
+<div class="message-skeleton" [class.outgoing]="isOutgoing">
+  <div class="avatar-skeleton" *ngIf="!isOutgoing"></div>
+  <div class="content-skeleton"></div>
+  <div class="avatar-skeleton" *ngIf="isOutgoing"></div>
+</div>
