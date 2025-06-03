@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - chatngo-backend
 
 on:
@@ -24,10 +21,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./AzureAICognitiveServicesAPI/AzureAICognitiveServicesAPI.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish ./AzureAICognitiveServicesAPI/AzureAICognitiveServicesAPI.sln -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -54,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A6B47B8A9EDA43DAA15F5A46D32CEFB1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FD165C444D5449D2BCECB7BAC595753A }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_44681A5A17A344D08AAB28540722EAA5 }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -65,4 +62,3 @@ jobs:
           app-name: 'chatngo-backend'
           slot-name: 'Production'
           package: .
-          
