@@ -40,13 +40,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("EnableSwagger", false))
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        // Set Swagger UI at the app's root
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+        options.RoutePrefix = string.Empty;
+    });
+
 }
-
-// Add a health check endpoint
-app.MapGet("/", () => "ChatnGo API is running!");
-app.MapGet("/health", () => "Healthy");
-
+else
+{
+    // Only add this root endpoint if Swagger UI is not at the root
+    app.MapGet("/", () => "ChatnGo API is running!");
+}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
