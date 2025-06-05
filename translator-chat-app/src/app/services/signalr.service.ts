@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +8,7 @@ import * as signalR from '@microsoft/signalr';
 export class SignalrService {
 
   private hubConnection!: signalR.HubConnection;
+  private baseUrl = environment.apiUrl;
 
   constructor() {}
 
@@ -21,7 +23,7 @@ export class SignalrService {
     }
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`https://localhost:7160/hub/messages?username=${currentUser.username}`)
+      .withUrl(`${this.baseUrl}/hub/messages?username=${currentUser.username}`)
       .withAutomaticReconnect()
       .build();
 
@@ -32,6 +34,7 @@ export class SignalrService {
       .catch(err => console.error('❌ SignalR connection error:', err));
   }
 
+  // Rest of your service remains unchanged
   onAudioMessage(callback: (data: any) => void): void {
     if (!this.hubConnection) {
       console.error('❌ hubConnection not initialized.');
@@ -60,21 +63,18 @@ export class SignalrService {
     return new Blob(byteArrays, { type: mimeType });
   }
 
-  // Send typing status to the backend
-sendTypingStatus(isTyping: boolean): void {
-  if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-    this.hubConnection.invoke('UserTyping', isTyping)
-      .catch(err => console.error('Error sending typing status:', err));
+  sendTypingStatus(isTyping: boolean): void {
+    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      this.hubConnection.invoke('UserTyping', isTyping)
+        .catch(err => console.error('Error sending typing status:', err));
+    }
   }
-}
 
-// Listen for typing status updates from the backend
-onTypingStatusUpdate(callback: (username: string, isTyping: boolean) => void): void {
-  if (!this.hubConnection) return;
-  this.hubConnection.on('UpdateTypingStatus', callback);
-}
+  onTypingStatusUpdate(callback: (username: string, isTyping: boolean) => void): void {
+    if (!this.hubConnection) return;
+    this.hubConnection.on('UpdateTypingStatus', callback);
+  }
   
-
   disconnect(): void {
     if (this.hubConnection) {
       this.hubConnection.stop();

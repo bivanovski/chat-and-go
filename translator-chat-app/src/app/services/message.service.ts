@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
-  private baseUrl = 'https://localhost:7160';
+  private baseUrl = environment.apiUrl;
   private apiUrl = `${this.baseUrl}/messages`;
 
   constructor(private http: HttpClient) {}

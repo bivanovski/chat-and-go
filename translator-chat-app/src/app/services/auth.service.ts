@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment.prod';
 
 interface User {
   id?: number;
@@ -13,7 +14,7 @@ interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'https://localhost:7160';
+  private baseUrl = environment.apiUrl;
   private apiUrl = `${this.baseUrl}/users`;
 
   constructor(private http: HttpClient) { }
