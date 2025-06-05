@@ -75,17 +75,16 @@
   }
 }
 
-
 /* Logout button style */
 .header-actions {
-    .logout-button {
-      color: #6366F1;
-      
-      &:hover {
-        background-color: rgba(99, 102, 241, 0.1);
-      }
+  .logout-button {
+    color: #6366F1;
+    
+    &:hover {
+      background-color: rgba(99, 102, 241, 0.1);
     }
   }
+}
 
 /* Messages area */
 .messages-area {
@@ -127,7 +126,7 @@
 .message-wrapper {
   display: flex;
   margin-bottom: 16px;
-  max-width: 70%;
+  max-width: 80%;
 
   &.own-message {
     align-self: flex-end;
@@ -179,10 +178,11 @@
 }
 
 .message-bubble {
-  padding: 12px 16px;
+  padding: 16px 20px; // Increased from 12px 16px
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: relative;
   max-width: calc(100% - 40px);
+  min-width: 120px; // Added minimum width
 }
 
 .message-sender {
@@ -193,8 +193,8 @@
 }
 
 .message-content {
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: 16px; // Increased from 15px
+  line-height: 1.5; // Increased from 1.4
   word-break: break-word;
 }
 
@@ -297,15 +297,16 @@
 .message-input-container {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 16px 20px;
   background-color: white;
   border-top: 1px solid #eaeaea;
   position: relative;
+  gap: 12px;
+  min-height: 80px;
 }
 
 .input-wrapper {
   flex: 1;
-  margin: 0 8px;
   border-radius: 24px;
   background-color: #f0f2f5;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -322,8 +323,6 @@
   }
 }
 
-// Replace the existing .message-field styles with these enhanced ones:
-
 .message-field {
   width: 100%;
   
@@ -331,7 +330,6 @@
     display: none;
   }
   
-  // Adjust vertical padding to center the text better
   ::ng-deep .mat-mdc-form-field-infix {
     padding-top: 16px;
     padding-bottom: 16px;
@@ -340,7 +338,7 @@
 
   ::ng-deep .mat-mdc-text-field-wrapper {
     background-color: transparent;
-    padding: 0 12px;
+    padding: 0 16px;
   }
   
   ::ng-deep .mat-mdc-form-field-flex {
@@ -348,14 +346,12 @@
     align-items: center;
   }
   
-  // Remove the outline border
   ::ng-deep .mdc-notched-outline__leading,
   ::ng-deep .mdc-notched-outline__notch,
   ::ng-deep .mdc-notched-outline__trailing {
     border-color: transparent !important;
   }
   
-  // Remove field states like hover/focus border
   ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__leading,
   ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__notch,
   ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__trailing,
@@ -365,7 +361,6 @@
     border-width: 0 !important;
   }
   
-  // Fix for input hover/focus background color and center the input text
   ::ng-deep .mat-mdc-input-element {
     caret-color: #6366F1;
     margin-top: 0;
@@ -390,23 +385,19 @@
     }
   }
   
-  // Fix placeholder vertical position and center it
   ::ng-deep .mat-mdc-form-field-label {
-    display: none !important; // Hide the floating label entirely
-  }
-  
-  .hint-icon {
-    color: #9ca3af;
+    display: none !important;
   }
 }
 
-/* Enhanced audio button and recording UI */
+/* Enhanced audio button */
 .audio-button {
-  width: 56px !important;
-  height: 56px !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  margin-right: 12px;
+  flex-shrink: 0;
   
   &:hover:not([disabled]) {
     transform: scale(1.05);
@@ -422,15 +413,208 @@
   }
 }
 
-/* Enhanced audio visualizer */
+/* Audio recorder */
+.audio-recorder {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+  
+  .record-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .button-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    mat-icon {
+      color: #6366F1;
+      transition: all 0.2s ease;
+    }
+    
+    .pulse-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(239, 83, 80, 0.2);
+      animation: pulse 2s infinite;
+    }
+    
+    &.recording {
+      background: linear-gradient(135deg, #FF5252, #ef5350);
+      transform: scale(1.1);
+      
+      mat-icon {
+        color: white;
+      }
+    }
+    
+    &.has-recording {
+      background: linear-gradient(135deg, #6366F1, #8B5CF6);
+      
+      mat-icon {
+        color: white;
+        animation: equalizer 1.5s infinite;
+      }
+    }
+  }
+  
+  .recording-status {
+    display: flex;
+    align-items: center;
+    background: rgba(239, 83, 80, 0.1);
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin-left: 16px;
+    
+    .waveform-visualization {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      
+      .wave-bar {
+        width: 3px;
+        background-color: #ef5350;
+        margin: 0 2px;
+        border-radius: 3px;
+        animation: sound-wave 1s infinite ease-in-out;
+        
+        @for $i from 1 through 5 {
+          &:nth-child(#{$i}) {
+            animation-delay: $i * 0.1s;
+          }
+        }
+      }
+    }
+    
+    .recording-timer {
+      font-weight: 500;
+      color: #ef5350;
+      margin-left: 12px;
+      font-size: 14px;
+      min-width: 32px;
+    }
+  }
+  
+  .recording-controls {
+    display: flex;
+    align-items: center;
+    margin-left: 16px;
+    gap: 8px;
+    
+    .control-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fffafa;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      }
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      &.preview-btn mat-icon {
+        color: #6366F1;
+      }
+      
+      &.send-btn {
+        background: #6366F1;
+        
+        mat-icon {
+          color: white;
+        }
+      }
+      
+      &.cancel-btn mat-icon {
+        color: #757575;
+      }
+    }
+  }
+}
+
+/* Enhanced send button */
+.send-button {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+  
+  mat-icon {
+    margin-left: 2px;
+    transform: rotate(-20deg);
+    transition: transform 0.2s ease;
+    font-size: 20px;
+  }
+  
+  &.send-button-active {
+    transform: scale(1.05);
+    
+    mat-icon {
+      transform: rotate(0);
+    }
+  }
+  
+  &:hover:not([disabled]) {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
+  
+  &:disabled {
+    background-color: #e2e5e9;
+    color: #b0b0b0;
+    box-shadow: none;
+  }
+}
+
+/* Enhanced audio visualizer container */
 .audio-visualizer-container {
   display: flex;
   flex-direction: column;
-  margin-right: 12px;
   background-color: rgba(244, 67, 54, 0.05);
-  padding: 8px 12px;
-  border-radius: 16px;
-  min-width: 150px;
+  padding: 12px 16px;
+  border-radius: 20px;
+  min-width: 180px;
+  margin-left: 16px;
 }
 
 .audio-visualizer {
@@ -451,61 +635,6 @@
     &:nth-child(3) { animation-duration: 0.9s; }
     &:nth-child(4) { animation-duration: 0.6s; }
     &:nth-child(5) { animation-duration: 0.4s; }
-  }
-}
-
-.recording-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 4px;
-  
-  .recording-dot {
-    height: 10px;
-    width: 10px;
-    margin-right: 6px;
-    background-color: #e53935;
-    border-radius: 50%;
-    animation: pulse-scale 1s infinite;
-  }
-  
-  .recording-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: #e53935;
-  }
-}
-
-.send-button {
-  width: 40px;
-  height: 40px;
-  transform: scale(0.9);
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
-  
-  mat-icon {
-    margin-left: 2px;
-    transform: rotate(-20deg);
-    transition: transform 0.2s ease;
-  }
-  
-  &.send-button-active {
-    transform: scale(1);
-    
-    mat-icon {
-      transform: rotate(0);
-    }
-  }
-  
-  &:hover:not([disabled]) {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-  }
-  
-  &:disabled {
-    background-color: #e2e5e9;
-    color: #b0b0b0;
-    box-shadow: none;
   }
 }
 
@@ -579,168 +708,6 @@
   }
 }
 
-.audio-recorder {
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  position: relative;
-  
-  .record-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    
-    .button-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    
-    mat-icon {
-      color: #6366F1;
-      transition: all 0.2s ease;
-    }
-    
-    .pulse-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: rgba(239, 83, 80, 0.2);
-      animation: pulse 2s infinite;
-    }
-    
-    &.recording {
-      background: linear-gradient(135deg, #FF5252, #ef5350);
-      transform: scale(1.1);
-      
-      mat-icon {
-        color: white;
-      }
-    }
-    
-    &.has-recording {
-      background: linear-gradient(135deg, #6366F1, #8B5CF6);
-      
-      mat-icon {
-        color: white;
-        animation: equalizer 1.5s infinite;
-      }
-    }
-  }
-  
-  .recording-status {
-    display: flex;
-    align-items: center;
-    background: rgba(239, 83, 80, 0.1);
-    border-radius: 20px;
-    padding: 6px 12px;
-    margin-left: 12px;
-    
-    .waveform-visualization {
-      display: flex;
-      align-items: center;
-      height: 24px;
-      
-      .wave-bar {
-        width: 3px;
-        background-color: #ef5350;
-        margin: 0 2px;
-        border-radius: 3px;
-        animation: sound-wave 1s infinite ease-in-out;
-        
-        @for $i from 1 through 5 {
-          &:nth-child(#{$i}) {
-            animation-delay: $i * 0.1s;
-          }
-        }
-      }
-    }
-    
-    .recording-timer {
-      font-weight: 500;
-      color: #ef5350;
-      margin-left: 10px;
-      font-size: 14px;
-      min-width: 28px;
-    }
-  }
-  
-  .recording-controls {
-    display: flex;
-    align-items: center;
-    margin-left: 12px;
-    
-    .control-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      margin: 0 4px;
-      transition: all 0.2s;
-      background: #fffafa;
-      padding: 0; // Remove padding that could affect centering
-      line-height: 0;
-      position: relative; // Needed for precise centering
-      
-      &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      
-      mat-icon {
-        font-size: 18px;
-        width: 18px; // Set explicit width
-        height: 18px; // Set explicit height
-        display: flex; // Create flex container for the icon
-        align-items: center;
-        justify-content: center;
-        position: absolute; // Position exactly in center
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); // Center precisely
-        margin: 0; // Remove any margins
-      }
-      
-      &.preview-btn mat-icon {
-        color: #6366F1;
-      }
-      
-      &.send-btn {
-        background: #6366F1;
-        
-        mat-icon {
-          color: white;
-        }
-      }
-      
-      &.cancel-btn mat-icon {
-        color: #757575;
-      }
-    }
-  }
-}
-
-// Animation for pulse effect
 @keyframes pulse {
   0% {
     transform: scale(0.8);
@@ -756,7 +723,6 @@
   }
 }
 
-// Animation for sound wave
 @keyframes sound-wave {
   0% {
     transform: scaleY(0.5);
@@ -769,7 +735,6 @@
   }
 }
 
-// Animation for equalizer icon
 @keyframes equalizer {
   0% {
     opacity: 0.8;
@@ -785,27 +750,19 @@
   }
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-
-
-/* Audio message styles - improved version */
+/* Audio message styles */
 .audio-message-container {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  background: #fff; // Use solid white for best contrast
+  background: #fff;
   border-radius: 22px;
   margin: 6px 0;
   box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
-  border: 1px solid #e0e7ef; // subtle border for separation
+  border: 1px solid #e0e7ef;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 
 .audio-waveform {
   display: flex;
@@ -838,7 +795,7 @@
 .wave-bar:nth-child(7) { animation-delay: -0.6s; }
 .wave-bar:nth-child(8) { animation-delay: -0.5s; }
 .wave-bar:nth-child(9) { animation-delay: -0.4s; }
-.wave-bar:nth-chiaudio-plald(10) { animation-delay: -0.3s; }
+.wave-bar:nth-child(10) { animation-delay: -0.3s; }
 
 @keyframes wave {
   0%, 100% { height: 40%; opacity: 0.6; }
@@ -883,10 +840,10 @@
 
 /* Special styling for own messages */
 .own-message .audio-message-container {
-  background: rgba(255,255,255,0.65); // semi-transparent white
+  background: rgba(255,255,255,0.65);
   border: 1px solid rgba(255,255,255,0.25);
   box-shadow: 0 2px 8px rgba(99,102,241,0.08);
-  backdrop-filter: blur(2px); // glass effect
+  backdrop-filter: blur(2px);
 }
 
 .own-message .audio-play-btn {
@@ -928,7 +885,7 @@
   color: #333;
 }
 
-/* Add to chat.component.scss */
+/* Typing indicator */
 .typing-bubble {
   display: flex;
   align-items: flex-end;
@@ -1031,71 +988,6 @@
   font-weight: 500;
 }
 
-/* Loading spinner container */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100% - 70px);
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  backdrop-filter: blur(8px); /* Modern blur effect */
-  z-index: 2;
-  
-  /* Azure design pattern for loading states */
-  mat-spinner {
-    margin-bottom: 20px;
-    filter: drop-shadow(0 4px 12px rgba(0, 120, 212, 0.15)); /* Subtle shadow for depth */
-    
-    ::ng-deep circle {
-      stroke: #0078d4 !important; /* Azure blue */
-      animation: spin-gradient 4s linear infinite !important; /* Custom animation */
-    }
-  }
-  
-  .loading-text {
-    color: #323130;
-    font-size: 16px;
-    font-weight: 500;
-    margin-top: 12px;
-    letter-spacing: 0.02em;
-    background: linear-gradient(90deg, #0078d4, #50e6ff, #0078d4);
-    background-size: 200% auto;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: text-gradient 3s linear infinite;
-  }
-}
-
-/* Modern gradient animation for text */
-@keyframes text-gradient {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-/* Custom spinner gradient animation */
-@keyframes spin-gradient {
-  0% { stroke: #0078d4; }
-  33% { stroke: #50e6ff; }
-  66% { stroke: #8661c5; }
-  100% { stroke: #0078d4; }
-}
-
-/* Override Material spinner animation for smoother effect */
-::ng-deep .mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
-  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1) !important;
-}
-
-/* Add disabled state for input area */
-.message-input-container.disabled {
-  opacity: 0.7;
-  pointer-events: none;
-  filter: grayscale(30%);
-}
-
-// Add these styles to your existing CSS
-
 .loading-more {
   display: flex;
   align-items: center;
@@ -1119,12 +1011,12 @@
   border-radius: 8px;
 }
 
-// For the message skeleton component
 app-message-skeleton {
   display: block;
   margin: 8px 0;
 }
-/* Mobile Responsive Styles - Only Layout Changes */
+
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
   :host {
     padding: 10px;
@@ -1181,15 +1073,16 @@ app-message-skeleton {
   }
 
   /* Message bubbles adjustments */
-  .message-wrapper {
+ .message-wrapper {
     margin-bottom: 12px;
-    max-width: 85%;
+    max-width: 90%; // Increased from 85%
   }
 
   .message-bubble {
-    padding: 8px 12px;
-    font-size: 14px;
-    line-height: 1.4;
+    padding: 12px 16px; // Increased from 8px 12px
+    font-size: 15px; // Increased from 14px
+    line-height: 1.5; // Increased from 1.4
+    min-width: 100px; // Added minimum width for mobile
   }
 
   .message-avatar {
@@ -1205,7 +1098,7 @@ app-message-skeleton {
   }
 
   .message-content {
-    font-size: 14px;
+    font-size: 15px; // Increased from 14px
   }
 
   .message-time {
@@ -1219,27 +1112,27 @@ app-message-skeleton {
     }
   }
 
-  /* Audio message adjustments - Instagram style: keep consistent dimensions */
+  /* Audio message adjustments */
   .audio-message-container {
-    flex-direction: row; // Keep horizontal layout like Instagram
+    flex-direction: row;
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    min-width: 200px; // Maintain minimum width
-    max-width: 250px; // Set reasonable max width
+    min-width: 200px;
+    max-width: 250px;
   }
 
   .audio-waveform {
-    width: 80px; // Fixed width like Instagram
-    height: 24px; // Keep consistent height
-    min-width: 80px; // Ensure minimum width
-    flex-grow: 0; // Don't grow
+    width: 80px;
+    height: 24px;
+    min-width: 80px;
+    flex-grow: 0;
   }
 
   .audio-info {
     flex: 1;
     text-align: left;
-    min-width: 80px; // Minimum for readability
+    min-width: 80px;
   }
 
   .audio-duration {
@@ -1248,16 +1141,18 @@ app-message-skeleton {
   }
 
   .audio-transcription {
-    font-size: 11px; // Smaller on mobile but still readable
+    font-size: 11px;
     margin-top: 2px;
     line-height: 1.2;
   }
 
-  /* Input area for mobile */
+  /* Input area for mobile - FIXED LAYOUT */
   .message-input-container {
-    padding: 8px 12px;
-    flex-wrap: nowrap; // Keep single row
-    gap: 8px;
+    padding: 12px 16px;
+    gap: 10px;
+    min-height: 76px;
+    flex-wrap: nowrap; // Prevent wrapping
+    align-items: center;
   }
 
   .input-wrapper {
@@ -1276,19 +1171,23 @@ app-message-skeleton {
       min-height: 48px;
     }
 
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      padding: 0 12px;
+    }
+
     ::ng-deep .mat-mdc-input-element {
       font-size: 16px; // Prevent zoom on iOS
     }
   }
 
-  /* Audio recorder adjustments - keep buttons same size */
+  /* Audio recorder adjustments */
   .audio-recorder {
     padding: 0;
-    flex-shrink: 0; // Don't shrink
+    flex-shrink: 0;
 
     .record-btn {
-      width: 48px; // Keep original size
-      height: 48px; // Keep original size
+      width: 44px;
+      height: 44px;
     }
 
     .recording-status {
@@ -1312,11 +1211,11 @@ app-message-skeleton {
 
     .recording-controls {
       margin-left: 8px;
+      gap: 6px;
 
       .control-btn {
-        width: 36px; // Keep original size
-        height: 36px; // Keep original size
-        margin: 0 2px;
+        width: 36px;
+        height: 36px;
 
         mat-icon {
           font-size: 16px;
@@ -1327,15 +1226,30 @@ app-message-skeleton {
     }
   }
 
-  /* Send button adjustments - keep original size */
+  /* Audio button and send button adjustments */
+  .audio-button {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+
   .send-button {
-    width: 40px; // Keep original size
-    height: 40px; // Keep original size
-    flex-shrink: 0; // Don't shrink
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    flex-shrink: 0;
 
     mat-icon {
       font-size: 18px;
     }
+  }
+
+  /* Audio visualizer adjustments */
+  .audio-visualizer-container {
+    min-width: 150px;
+    margin-left: 12px;
+    padding: 8px 12px;
   }
 
   /* Date divider */
@@ -1387,6 +1301,73 @@ app-message-skeleton {
   }
 }
 
+/* Very small screens */
+@media (max-width: 480px) {
+   .message-wrapper {
+    max-width: 95%; // Increased from 90%
+  }
+
+  .message-bubble {
+    font-size: 14px; // Increased from 13px
+    padding: 10px 14px; // Increased from 6px 10px
+    min-width: 90px; // Added minimum width for very small screens
+  }
+
+  .audio-message-container {
+    gap: 8px;
+    padding: 6px 10px;
+    min-width: 180px;
+    max-width: 220px;
+  }
+
+  .audio-waveform {
+    width: 70px;
+    min-width: 70px;
+  }
+
+  /* Input area for very small screens */
+  .message-input-container {
+    padding: 10px 12px;
+    gap: 8px;
+    min-height: 70px;
+  }
+
+  .audio-recorder {
+    .control-btn {
+      width: 32px;
+      height: 32px;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .record-btn {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  .send-button,
+  .audio-button {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+
+    mat-icon {
+      font-size: 16px;
+    }
+  }
+
+  .audio-visualizer-container {
+    min-width: 120px;
+    margin-left: 8px;
+    padding: 6px 10px;
+  }
+}
+
 /* Tablet adjustments */
 @media (min-width: 769px) and (max-width: 1024px) {
   .chat-container {
@@ -1398,11 +1379,18 @@ app-message-skeleton {
   }
 
   .message-wrapper {
-    max-width: 75%;
+    max-width: 85%;
+  }
+
+  .message-bubble {
+    padding: 18px 22px; // Increased padding for tablets
+    font-size: 16px;
+    line-height: 1.5;
   }
 
   .message-input-container {
-    padding: 10px 16px;
+    padding: 14px 18px;
+    gap: 14px;
   }
 }
 
@@ -1426,81 +1414,32 @@ app-message-skeleton {
   }
 
   .message-input-container {
-    padding: 6px 12px;
+    padding: 8px 12px;
+    min-height: 64px;
   }
 
   .audio-recorder .record-btn {
-    width: 48px; // Keep original size
-    height: 48px; // Keep original size
+    width: 40px;
+    height: 40px;
   }
 
-  .send-button {
-    width: 40px; // Keep original size
-    height: 40px; // Keep original size
-  }
-}
-
-/* Very small screens */
-@media (max-width: 480px) {
-  .message-wrapper {
-    max-width: 90%;
-  }
-
-  .message-bubble {
-    font-size: 13px;
-    padding: 6px 10px;
-  }
-
-  .audio-message-container {
-    gap: 8px;
-    padding: 6px 10px;
-    min-width: 180px; // Smaller minimum for very small screens
-    max-width: 220px;
-  }
-
-  .audio-waveform {
-    width: 70px; // Slightly smaller for very small screens
-    min-width: 70px;
-  }
-
-  .audio-recorder {
-    .control-btn {
-      width: 32px; // Slightly smaller for very small screens
-      height: 32px;
-      margin: 0 1px;
-
-      mat-icon {
-        font-size: 14px;
-        width: 14px;
-        height: 14px;
-      }
-    }
-
-    .record-btn {
-      width: 44px; // Slightly smaller for very small screens
-      height: 44px;
-    }
-  }
-
-  .send-button {
-    width: 36px; // Slightly smaller for very small screens
-    height: 36px;
-
-    mat-icon {
-      font-size: 16px;
-    }
-  }
-
-  .input-wrapper {
-    min-width: 0; // Allow full shrinking on very small screens
+  .send-button,
+  .audio-button {
+    width: 40px !important;
+    height: 40px !important;
   }
 }
 
-/* Touch-friendly improvements - Remove the auto-sizing that was making buttons bigger */
+/* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
-  // Remove the min-height and min-width rules that were making buttons bigger
   .message-input-container {
-    padding-bottom: env(safe-area-inset-bottom, 8px);
+    padding-bottom: env(safe-area-inset-bottom, 12px);
+  }
+
+  .message-field {
+    ::ng-deep .mat-mdc-input-element {
+      font-size: 16px; // Prevent zoom on iOS
+    }
   }
 }
 
@@ -1516,4 +1455,11 @@ button, .record-btn, .control-btn {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+/* Add disabled state for input area */
+.message-input-container.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+  filter: grayscale(30%);
 }

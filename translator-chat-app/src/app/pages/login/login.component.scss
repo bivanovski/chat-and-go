@@ -27,19 +27,46 @@
   }
   
   .login-container {
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 16px;
-    max-width: 420px;
-    width: calc(100% - 40px); // Account for margin instead of padding
-    max-height: calc(100vh - 40px); // Prevent vertical overflow
-    padding: 2.5rem;
-    position: relative;
-    z-index: 2;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    margin: 20px; // Use margin instead of padding on parent
-    overflow-y: auto; // Allow scrolling if content is too tall
-    box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  max-width: 420px;
+  width: calc(100% - 40px);
+  max-height: calc(100vh - 40px);
+  padding: 2.5rem;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  margin: 20px;
+  box-sizing: border-box;
+  
+  // Remove overflow-y: auto and replace with responsive overflow handling
+  // On desktop (769px and above), prevent scrolling entirely
+  @media (min-width: 769px) {
+    overflow: hidden; // Completely disable scrolling on desktop
+    display: flex;
+    flex-direction: column;
+    justify-content: center; // Center content vertically if needed
   }
+  
+  // Enable scrolling only on mobile/tablet for better touch UX
+  @media (max-width: 768px) {
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+      background-color: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(99, 102, 241, 0.5);
+    }
+  }
+}
   
   .login-header {
     margin-bottom: 28px;
