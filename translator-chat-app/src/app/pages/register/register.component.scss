@@ -1,13 +1,18 @@
 .register-page {
-    min-height: 100vh;
-    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #0396FF 0%, #AB82FF 100%);
-    padding: 20px;
+    padding: 0;
     overflow: hidden;
-    position: relative;
+    box-sizing: border-box;
   }
   
   .animated-bg {
@@ -25,11 +30,15 @@
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
     max-width: 420px; /* Match login container width */
-    width: 100%;
+    width: calc(100% - 40px);
     padding: 2rem; /* Match login padding */
     position: relative;
     z-index: 2;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    margin: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    box-sizing: border-box;
   }
   
   .register-header {
@@ -156,4 +165,212 @@
     }
   }
 
-  
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .register-page {
+    padding: 0;
+    align-items: center;
+  }
+
+  .register-container {
+    width: calc(100% - 32px);
+    max-width: calc(100vw - 32px);
+    padding: 2rem 1.5rem;
+    margin: 16px;
+  }
+
+  .register-header {
+    margin-bottom: 1.25rem;
+
+    h2 {
+      font-size: 1.4rem;
+    }
+  }
+
+  .register-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .register-form {
+    gap: 0.875rem;
+
+    .full-width {
+      ::ng-deep .mat-mdc-input-element {
+        font-size: 16px; // Prevent zoom on iOS
+      }
+    }
+  }
+
+  .register-button {
+    height: 52px;
+  }
+
+  .login-link-container {
+    margin-top: 1.25rem;
+
+    .login-button {
+      height: 48px;
+    }
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .register-page {
+    padding: 0;
+  }
+
+  .register-container {
+    width: calc(100% - 24px);
+    padding: 1.5rem 1rem;
+    margin: 12px;
+    max-height: calc(100vh - 24px);
+  }
+
+  .register-header {
+    margin-bottom: 1rem;
+
+    h2 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .register-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .register-form {
+    gap: 0.75rem;
+
+    .language-section {
+      .language-label {
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .register-button {
+    height: 48px;
+  }
+
+  .login-link-container {
+    margin-top: 1rem;
+
+    .divider {
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .login-button {
+      height: 44px;
+    }
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .register-page {
+    padding: 0;
+    align-items: center;
+  }
+
+  .register-container {
+    max-width: 450px;
+    width: calc(100% - 24px);
+    padding: 1.5rem;
+    margin: 12px;
+    max-height: calc(100vh - 24px);
+  }
+
+  .register-header {
+    margin-bottom: 0.75rem;
+
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+
+  .register-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .register-form {
+    gap: 0.625rem;
+  }
+
+  .register-button {
+    height: 44px;
+  }
+
+  .login-link-container {
+    margin-top: 0.75rem;
+
+    .login-button {
+      height: 40px;
+    }
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .register-container {
+    max-width: 450px;
+    padding: 2.25rem;
+  }
+
+  .register-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1025px) {
+  .register-container {
+    padding: 2.5rem;
+  }
+
+  .register-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .register-form {
+    gap: 1.25rem;
+  }
+
+  .login-link-container {
+    margin-top: 1.75rem;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .register-form .full-width {
+    ::ng-deep .mat-mdc-input-element {
+      font-size: 16px; // Prevent zoom on iOS
+    }
+  }
+
+  .register-button,
+  .login-button {
+    min-height: 44px; // Touch-friendly minimum
+  }
+}
+
+/* Safe area handling for notched devices */
+@supports (padding: max(0px)) {
+  .register-container {
+    margin-top: max(env(safe-area-inset-top), 20px);
+    margin-bottom: max(env(safe-area-inset-bottom), 20px);
+    margin-left: max(env(safe-area-inset-left), 16px);
+    margin-right: max(env(safe-area-inset-right), 16px);
+  }
+}
+
+/* Prevent text selection on buttons */
+button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

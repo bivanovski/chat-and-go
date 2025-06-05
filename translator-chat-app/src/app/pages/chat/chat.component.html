@@ -38,11 +38,6 @@
       <span>Loading earlier messages...</span>
     </div>
     
-    <!-- No more messages indicator -->
-    <div class="no-more-messages" *ngIf="!isLoadingMore && !hasMoreMessages && messages.length > 0">
-      <span>No more messages</span>
-    </div>
-    
     <!-- Skeleton loaders -->
     <ng-container *ngIf="loading">
       <app-message-skeleton *ngFor="let i of [].constructor(skeletonCount); let idx = index" 

@@ -1,13 +1,18 @@
 .login-page {
-    min-height: 100vh;
-    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #0396FF 0%, #AB82FF 100%);
-    padding: 20px;
+    padding: 0; // Remove padding that causes overflow
     overflow: hidden;
-    position: relative;
+    box-sizing: border-box; // Ensure proper box model
   }
   
   .animated-bg {
@@ -25,11 +30,15 @@
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
     max-width: 420px;
-    width: 100%;
+    width: calc(100% - 40px); // Account for margin instead of padding
+    max-height: calc(100vh - 40px); // Prevent vertical overflow
     padding: 2.5rem;
     position: relative;
     z-index: 2;
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    margin: 20px; // Use margin instead of padding on parent
+    overflow-y: auto; // Allow scrolling if content is too tall
+    box-sizing: border-box;
   }
   
   .login-header {
@@ -252,3 +261,248 @@
     }
   }
 
+/* Additional Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .login-page {
+    padding: 0; // Remove padding
+    align-items: center; // Center vertically
+  }
+
+  .login-container {
+    width: calc(100% - 32px); // Account for margin
+    max-width: calc(100vw - 32px); // Prevent overflow
+    padding: 2rem 1.5rem;
+    margin: 16px; // Smaller margin on mobile
+  }
+
+  .logo {
+    margin-bottom: 16px;
+
+    .logo-container {
+      height: 80px;
+      width: 80px;
+    }
+  }
+
+  .app-title {
+    font-size: 28px;
+  }
+
+  .login-subtitle {
+    font-size: 14px;
+  }
+
+  .login-header {
+    margin-bottom: 24px;
+  }
+
+  .login-form {
+    gap: 1rem;
+
+    .full-width {
+      ::ng-deep .mat-mdc-input-element {
+        font-size: 16px; // Prevent zoom on iOS
+      }
+    }
+  }
+
+  .login-button {
+    height: 52px;
+    font-size: 15px;
+  }
+
+  .register-section {
+    margin-top: 1.5rem;
+
+    .register-button {
+      height: 48px;
+    }
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 0;
+  }
+
+  .login-container {
+    width: calc(100% - 24px); // Even smaller margin
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    margin: 12px; // Smaller margin
+    max-height: calc(100vh - 24px); // Prevent overflow
+  }
+
+  .logo {
+    margin-bottom: 12px;
+
+    .logo-container {
+      height: 70px;
+      width: 70px;
+    }
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+
+  .login-subtitle {
+    font-size: 13px;
+  }
+
+  .login-header {
+    margin-bottom: 20px;
+  }
+
+  .login-form {
+    gap: 0.875rem;
+  }
+
+  .login-button {
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .register-section {
+    margin-top: 1.25rem;
+
+    .divider {
+      font-size: 0.8rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .register-button {
+      height: 44px;
+      font-size: 14px;
+    }
+  }
+
+  .actions-row {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .login-page {
+    padding: 0;
+    align-items: center;
+  }
+
+  .login-container {
+    max-width: 400px;
+    width: calc(100% - 24px);
+    padding: 1.5rem;
+    margin: 12px;
+    max-height: calc(100vh - 24px);
+  }
+
+  .logo {
+    margin-bottom: 8px;
+
+    .logo-container {
+      height: 60px;
+      width: 60px;
+    }
+  }
+
+  .app-title {
+    font-size: 22px;
+    margin: 8px 0 0 0;
+  }
+
+  .login-subtitle {
+    font-size: 12px;
+  }
+
+  .login-header {
+    margin-bottom: 16px;
+  }
+
+  .login-form {
+    gap: 0.75rem;
+  }
+
+  .login-button {
+    height: 44px;
+  }
+
+  .register-section {
+    margin-top: 1rem;
+
+    .register-button {
+      height: 40px;
+    }
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .login-container {
+    max-width: 450px;
+    padding: 2.75rem;
+  }
+
+  .logo .logo-container {
+    height: 90px;
+    width: 90px;
+  }
+
+  .app-title {
+    font-size: 30px;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1025px) {
+  .login-container {
+    padding: 3rem;
+  }
+
+  .login-header {
+    margin-bottom: 36px;
+  }
+
+  .login-form {
+    gap: 1.5rem;
+  }
+
+  .register-section {
+    margin-top: 2.5rem;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .login-form .full-width {
+    ::ng-deep .mat-mdc-input-element {
+      font-size: 16px; // Prevent zoom on iOS
+    }
+  }
+
+  .login-button,
+  .register-button {
+    min-height: 44px; // Touch-friendly minimum
+  }
+}
+
+/* Safe area handling for notched devices */
+@supports (padding: max(0px)) {
+  .login-container {
+    margin-top: max(env(safe-area-inset-top), 20px);
+    margin-bottom: max(env(safe-area-inset-bottom), 20px);
+    margin-left: max(env(safe-area-inset-left), 16px);
+    margin-right: max(env(safe-area-inset-right), 16px);
+  }
+}
+
+/* Prevent text selection on buttons */
+button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
