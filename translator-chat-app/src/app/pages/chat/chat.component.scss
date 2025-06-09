@@ -2,7 +2,7 @@
   display: block;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for Android */
-  background: linear-gradient(135deg, #0396FF 0%, #AB82FF 100%);
+  background: linear-gradient(135deg, #0396ff 0%, #ab82ff 100%);
   padding: 20px;
   overflow: hidden; // Prevent scrollbar on the host component
   position: fixed; // This prevents body scrolling behind the component
@@ -83,8 +83,8 @@
 /* Logout button style */
 .header-actions {
   .logout-button {
-    color: #6366F1;
-    
+    color: #6366f1;
+
     &:hover {
       background-color: rgba(99, 102, 241, 0.1);
     }
@@ -104,18 +104,18 @@
   /* Android keyboard handling */
   height: 0; /* Allow flex to determine height */
   min-height: 0; /* Allow shrinking when keyboard appears */
-  
+
   // Custom scrollbar styling
   &::-webkit-scrollbar {
     width: 6px;
     background-color: transparent;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background-color: rgba(99, 102, 241, 0.3);
   }
-  
+
   &::-webkit-scrollbar-thumb:hover {
     background-color: rgba(99, 102, 241, 0.5);
   }
@@ -323,7 +323,7 @@
   background-color: #f0f2f5;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
-  
+
   &:focus-within {
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
     background-color: white;
@@ -337,11 +337,11 @@
 
 .message-field {
   width: 100%;
-  
+
   ::ng-deep .mat-mdc-form-field-subscript-wrapper {
     display: none;
   }
-  
+
   ::ng-deep .mat-mdc-form-field-infix {
     padding-top: 16px;
     padding-bottom: 16px;
@@ -352,18 +352,18 @@
     background-color: transparent;
     padding: 0 16px;
   }
-  
+
   ::ng-deep .mat-mdc-form-field-flex {
     min-height: 56px;
     align-items: center;
   }
-  
+
   ::ng-deep .mdc-notched-outline__leading,
   ::ng-deep .mdc-notched-outline__notch,
   ::ng-deep .mdc-notched-outline__trailing {
     border-color: transparent !important;
   }
-  
+
   ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__leading,
   ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__notch,
   ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__trailing,
@@ -372,17 +372,17 @@
   ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
     border-width: 0 !important;
   }
-  
+
   ::ng-deep .mat-mdc-input-element {
-    caret-color: #6366F1;
+    caret-color: #6366f1;
     margin-top: 0;
     transition: text-align 0.3s ease;
     line-height: 24px;
-    
+
     &:focus {
       text-align: left;
     }
-    
+
     &::placeholder {
       opacity: 0.7;
       font-weight: 300;
@@ -390,13 +390,13 @@
       line-height: 24px;
       transform: translateY(0);
     }
-    
+
     &:focus::placeholder {
       opacity: 0.5;
       transition: opacity 0.3s ease;
     }
   }
-  
+
   ::ng-deep .mat-mdc-form-field-label {
     display: none !important;
   }
@@ -410,7 +410,7 @@
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
-  
+
   &:hover:not([disabled]) {
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
@@ -431,7 +431,7 @@
   align-items: center;
   position: relative;
   flex-shrink: 0;
-  
+
   .record-btn {
     width: 48px;
     height: 48px;
@@ -444,26 +444,26 @@
     cursor: pointer;
     position: relative;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
-    
+
     &:hover {
       transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
-    
+
     .button-content {
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
     }
-    
+
     mat-icon {
-      color: #6366F1;
+      color: #6366f1;
       transition: all 0.2s ease;
     }
-    
+
     .pulse-ring {
       position: absolute;
       width: 100%;
@@ -472,26 +472,26 @@
       background-color: rgba(239, 83, 80, 0.2);
       animation: pulse 2s infinite;
     }
-    
+
     &.recording {
-      background: linear-gradient(135deg, #FF5252, #ef5350);
+      background: linear-gradient(135deg, #ff5252, #ef5350);
       transform: scale(1.1);
-      
+
       mat-icon {
         color: white;
       }
     }
-    
+
     &.has-recording {
-      background: linear-gradient(135deg, #6366F1, #8B5CF6);
-      
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+
       mat-icon {
         color: white;
         animation: equalizer 1.5s infinite;
       }
     }
   }
-  
+
   .recording-status {
     display: flex;
     align-items: center;
@@ -499,19 +499,19 @@
     border-radius: 20px;
     padding: 8px 16px;
     margin-left: 16px;
-    
+
     .waveform-visualization {
       display: flex;
       align-items: center;
       height: 24px;
-      
+
       .wave-bar {
         width: 3px;
         background-color: #ef5350;
         margin: 0 2px;
         border-radius: 3px;
         animation: sound-wave 1s infinite ease-in-out;
-        
+
         @for $i from 1 through 5 {
           &:nth-child(#{$i}) {
             animation-delay: $i * 0.1s;
@@ -519,7 +519,7 @@
         }
       }
     }
-    
+
     .recording-timer {
       font-weight: 500;
       color: #ef5350;
@@ -528,13 +528,13 @@
       min-width: 32px;
     }
   }
-  
+
   .recording-controls {
     display: flex;
     align-items: center;
     margin-left: 16px;
     gap: 8px;
-    
+
     .control-btn {
       width: 40px;
       height: 40px;
@@ -546,13 +546,13 @@
       cursor: pointer;
       transition: all 0.2s;
       background: #fffafa;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
       &:hover {
         transform: scale(1.1);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
-      
+
       mat-icon {
         font-size: 18px;
         width: 18px;
@@ -561,19 +561,19 @@
         align-items: center;
         justify-content: center;
       }
-      
+
       &.preview-btn mat-icon {
-        color: #6366F1;
+        color: #6366f1;
       }
-      
+
       &.send-btn {
-        background: #6366F1;
-        
+        background: #6366f1;
+
         mat-icon {
           color: white;
         }
       }
-      
+
       &.cancel-btn mat-icon {
         color: #757575;
       }
@@ -581,43 +581,54 @@
   }
 }
 
-/* Enhanced send button */
+/* Enhanced send button - CONSOLIDATED */
 .send-button {
   width: 48px;
   height: 48px;
   min-width: 48px;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
   box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  
+  /* Mobile touch optimizations */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+
   mat-icon {
-    margin: 0; // Remove the left margin
-    transform: rotate(-20deg);
-    transition: transform 0.2s ease;
+    margin: 0;
+    transform: rotate(-20deg) translateX(1px); // Add slight X translation to center better
+    transition: transform 0.1s ease;
     font-size: 20px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  
+
   &.send-button-active {
     transform: scale(1.05);
-    
+
     mat-icon {
-      transform: rotate(0);
+      transform: rotate(0) translateX(0); // Reset translation when active
     }
   }
-  
+
   &:hover:not([disabled]) {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
-  
+
   &:disabled {
     background-color: #e2e5e9;
     color: #b0b0b0;
     box-shadow: none;
+    transform: none;
+    transition: none;
   }
 }
 
@@ -637,19 +648,29 @@
   align-items: center;
   justify-content: space-between;
   height: 28px;
-  
+
   .visualizer-bar {
     width: 4px;
     background: linear-gradient(to top, #f44336, #ff7961);
     border-radius: 2px;
     height: 5px;
     animation: sound 0.8s infinite alternate;
-    
-    &:nth-child(1) { animation-duration: 0.7s; }
-    &:nth-child(2) { animation-duration: 0.5s; }
-    &:nth-child(3) { animation-duration: 0.9s; }
-    &:nth-child(4) { animation-duration: 0.6s; }
-    &:nth-child(5) { animation-duration: 0.4s; }
+
+    &:nth-child(1) {
+      animation-duration: 0.7s;
+    }
+    &:nth-child(2) {
+      animation-duration: 0.5s;
+    }
+    &:nth-child(3) {
+      animation-duration: 0.9s;
+    }
+    &:nth-child(4) {
+      animation-duration: 0.6s;
+    }
+    &:nth-child(5) {
+      animation-duration: 0.4s;
+    }
   }
 }
 
@@ -667,15 +688,30 @@
 }
 
 @keyframes pulse-opacity {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes pulse-scale {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.5; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes sound {
@@ -698,25 +734,25 @@
   transition: color 0.2s;
   padding: 4px 8px;
   border-radius: 16px;
-  
+
   mat-icon {
     font-size: 16px;
     height: 16px;
     width: 16px;
     margin-right: 4px;
   }
-  
+
   .edit-icon {
     font-size: 14px;
     margin-left: 4px;
     opacity: 0;
     transition: opacity 0.2s;
   }
-  
+
   &:hover {
-    color: #6366F1;
+    color: #6366f1;
     background-color: rgba(99, 102, 241, 0.08);
-    
+
     .edit-icon {
       opacity: 1;
     }
@@ -797,24 +833,49 @@
   background: linear-gradient(180deg, #1976d2 60%, #64b5f6 100%);
   border-radius: 3px;
   animation: wave 1.3s infinite ease-in-out;
-  
+
   &:nth-child(odd) {
     height: 55%;
   }
 }
-.wave-bar:nth-child(2) { animation-delay: -1.1s; }
-.wave-bar:nth-child(3) { animation-delay: -1.0s; }
-.wave-bar:nth-child(4) { animation-delay: -0.9s; }
-.wave-bar:nth-child(5) { animation-delay: -0.8s; }
-.wave-bar:nth-child(6) { animation-delay: -0.7s; }
-.wave-bar:nth-child(7) { animation-delay: -0.6s; }
-.wave-bar:nth-child(8) { animation-delay: -0.5s; }
-.wave-bar:nth-child(9) { animation-delay: -0.4s; }
-.wave-bar:nth-child(10) { animation-delay: -0.3s; }
+.wave-bar:nth-child(2) {
+  animation-delay: -1.1s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: -1s;
+}
+.wave-bar:nth-child(4) {
+  animation-delay: -0.9s;
+}
+.wave-bar:nth-child(5) {
+  animation-delay: -0.8s;
+}
+.wave-bar:nth-child(6) {
+  animation-delay: -0.7s;
+}
+.wave-bar:nth-child(7) {
+  animation-delay: -0.6s;
+}
+.wave-bar:nth-child(8) {
+  animation-delay: -0.5s;
+}
+.wave-bar:nth-child(9) {
+  animation-delay: -0.4s;
+}
+.wave-bar:nth-child(10) {
+  animation-delay: -0.3s;
+}
 
 @keyframes wave {
-  0%, 100% { height: 40%; opacity: 0.6; }
-  50% { height: 100%; opacity: 0.9; }
+  0%,
+  100% {
+    height: 40%;
+    opacity: 0.6;
+  }
+  50% {
+    height: 100%;
+    opacity: 0.9;
+  }
 }
 
 .audio-info {
@@ -855,9 +916,9 @@
 
 /* Special styling for own messages */
 .own-message .audio-message-container {
-  background: rgba(255,255,255,0.65);
-  border: 1px solid rgba(255,255,255,0.25);
-  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
   backdrop-filter: blur(2px);
 }
 
@@ -867,14 +928,14 @@
 }
 
 .own-message .audio-duration {
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   color: #6366f1;
 }
 
 .own-message .audio-info,
 .own-message .audio-transcription {
   color: #4f46e5;
-  text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .own-message .wave-bar {
@@ -935,8 +996,10 @@
   height: 8px;
   position: relative;
 }
-.dot-typing::before, .dot-typing::after, .dot-typing span {
-  content: '';
+.dot-typing::before,
+.dot-typing::after,
+.dot-typing span {
+  content: "";
   display: inline-block;
   width: 6px;
   height: 6px;
@@ -959,8 +1022,16 @@
   animation-delay: 0.4s;
 }
 @keyframes typing-bounce {
-  0%, 80%, 100% { transform: scale(0.7); opacity: 0.7; }
-  40% { transform: scale(1); opacity: 1; }
+  0%,
+  80%,
+  100% {
+    transform: scale(0.7);
+    opacity: 0.7;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Loading spinner container */
@@ -1009,7 +1080,7 @@
   justify-content: center;
   padding: 12px;
   gap: 8px;
-  
+
   span {
     font-size: 14px;
     color: #6b7280;
@@ -1022,7 +1093,7 @@
   font-size: 0.875rem;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: rgba(0,0,0,0.03);
+  background-color: rgba(0, 0, 0, 0.03);
   border-radius: 8px;
 }
 
@@ -1099,16 +1170,16 @@ app-message-skeleton {
   }
 
   /* Message bubbles adjustments */
- .message-wrapper {
+  .message-wrapper {
     margin-bottom: 12px;
-    max-width: 90%; // Increased from 85%
+    max-width: 90%;
   }
 
   .message-bubble {
-    padding: 12px 16px; // Increased from 8px 12px
-    font-size: 15px; // Increased from 14px
-    line-height: 1.5; // Increased from 1.4
-    min-width: 100px; // Added minimum width for mobile
+    padding: 12px 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    min-width: 100px;
   }
 
   .message-avatar {
@@ -1124,7 +1195,7 @@ app-message-skeleton {
   }
 
   .message-content {
-    font-size: 15px; // Increased from 14px
+    font-size: 15px;
   }
 
   .message-time {
@@ -1177,7 +1248,7 @@ app-message-skeleton {
     padding: 12px 16px;
     gap: 10px;
     min-height: 76px;
-    flex-wrap: nowrap; // Prevent wrapping
+    flex-wrap: nowrap;
     align-items: center;
     /* Android keyboard handling */
     position: sticky;
@@ -1186,12 +1257,14 @@ app-message-skeleton {
     z-index: 1001;
     background-color: white;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    /* Allow controls to extend beyond container */
+    overflow: visible;
   }
 
   .input-wrapper {
     margin: 0;
     flex: 1;
-    min-width: 0; // Allow shrinking
+    min-width: 0;
   }
 
   .message-field {
@@ -1216,10 +1289,16 @@ app-message-skeleton {
     }
   }
 
-  /* Audio recorder adjustments */
+  /* Enhanced audio recorder for Android visibility */
   .audio-recorder {
     padding: 0;
     flex-shrink: 0;
+    /* Ensure controls are always visible */
+    position: relative;
+    z-index: 100;
+    /* Ensure recorder doesn't get clipped */
+    overflow: visible;
+    contain: none;
 
     .record-btn {
       width: 44px;
@@ -1230,6 +1309,9 @@ app-message-skeleton {
       margin-left: 8px;
       padding: 4px 8px;
       border-radius: 16px;
+      /* Ensure status is visible */
+      background: rgba(239, 83, 80, 0.15);
+      backdrop-filter: blur(4px);
 
       .waveform-visualization {
         .wave-bar {
@@ -1245,39 +1327,104 @@ app-message-skeleton {
       }
     }
 
+    /* Enhanced recording controls for Android */
     .recording-controls {
+      display: flex !important; /* Force display on Android */
+      align-items: center;
       margin-left: 8px;
-      gap: 6px;
+      gap: 8px;
+      /* Ensure controls are above other elements */
+      position: relative;
+      z-index: 200;
+      /* Make controls more visible on Android */
+      background: rgba(255, 255, 255, 0.95);
+      padding: 4px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      /* Force hardware acceleration */
+      will-change: auto;
+      transform: translateZ(0);
+      backface-visibility: visible;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
 
       .control-btn {
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        display: flex !important; /* Force display */
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        /* Ensure buttons are touchable on Android */
+        min-width: 40px;
+        min-height: 40px;
+        /* Ensure buttons are interactive */
+        pointer-events: auto !important;
+        touch-action: manipulation;
+        /* Prevent any CSS that might hide buttons */
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        &:hover,
+        &:active {
+          transform: scale(1.1);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
 
         mat-icon {
-          font-size: 16px;
-          width: 16px;
-          height: 16px;
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
     }
   }
 
-  /* Audio button and send button adjustments */
+  /* Audio button adjustments */
   .audio-button {
     width: 44px !important;
     height: 44px !important;
     min-width: 44px;
     flex-shrink: 0;
+    /* Mobile touch optimizations */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform 0.1s ease;
   }
 
+  /* Send button mobile optimizations */
   .send-button {
     width: 44px;
     height: 44px;
     min-width: 44px;
-    flex-shrink: 0;
+    /* Mobile-specific optimizations */
+    transition: transform 0.05s ease;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 
     mat-icon {
       font-size: 18px;
+      width: 18px;
+      height: 18px;
+      transform: rotate(-20deg) translateX(1px);
+      transition: transform 0.05s ease;
+    }
+
+    &:active {
+      transform: scale(0.95) translateZ(0);
+      transition: none;
+    }
+
+    &:hover {
+      transform: none;
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
     }
   }
 
@@ -1323,7 +1470,9 @@ app-message-skeleton {
     height: 6px;
   }
 
-  .dot-typing::before, .dot-typing::after, .dot-typing span {
+  .dot-typing::before,
+  .dot-typing::after,
+  .dot-typing span {
     width: 5px;
     height: 5px;
   }
@@ -1339,14 +1488,14 @@ app-message-skeleton {
 
 /* Very small screens */
 @media (max-width: 480px) {
-   .message-wrapper {
-    max-width: 95%; // Increased from 90%
+  .message-wrapper {
+    max-width: 95%;
   }
 
   .message-bubble {
-    font-size: 14px; // Increased from 13px
-    padding: 10px 14px; // Increased from 6px 10px
-    min-width: 90px; // Added minimum width for very small screens
+    font-size: 14px;
+    padding: 10px 14px;
+    min-width: 90px;
   }
 
   .audio-message-container {
@@ -1369,14 +1518,22 @@ app-message-skeleton {
   }
 
   .audio-recorder {
-    .control-btn {
-      width: 32px;
-      height: 32px;
+    .recording-controls {
+      margin-left: 6px;
+      gap: 6px;
+      padding: 2px;
 
-      mat-icon {
-        font-size: 14px;
-        width: 14px;
-        height: 14px;
+      .control-btn {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
       }
     }
 
@@ -1391,10 +1548,24 @@ app-message-skeleton {
     width: 40px !important;
     height: 40px !important;
     min-width: 40px;
+    transition: none !important;
+    -webkit-tap-highlight-color: transparent;
 
     mat-icon {
       font-size: 16px;
+      width: 16px;
+      height: 16px;
+      transition: none !important;
     }
+
+    &:active {
+      transform: scale(0.9);
+      transition: none;
+    }
+  }
+
+  .send-button mat-icon {
+    transform: rotate(-20deg) translateX(0.5px);
   }
 
   .audio-visualizer-container {
@@ -1419,7 +1590,7 @@ app-message-skeleton {
   }
 
   .message-bubble {
-    padding: 18px 22px; // Increased padding for tablets
+    padding: 18px 22px;
     font-size: 16px;
     line-height: 1.5;
   }
@@ -1454,9 +1625,30 @@ app-message-skeleton {
     min-height: 64px;
   }
 
-  .audio-recorder .record-btn {
-    width: 40px;
-    height: 40px;
+  .audio-recorder {
+    .recording-controls {
+      margin-left: 4px;
+      gap: 4px;
+      padding: 2px;
+
+      .control-btn {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+
+        mat-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+
+    .record-btn {
+      width: 36px;
+      height: 36px;
+    }
   }
 
   .send-button,
@@ -1468,13 +1660,12 @@ app-message-skeleton {
 
 /* Google Pixel specific fixes */
 @media screen and (-webkit-device-pixel-ratio: 2.625),
-       screen and (-webkit-device-pixel-ratio: 3),
-       screen and (device-width: 411px) and (device-height: 731px),
-       screen and (device-width: 393px) and (device-height: 851px) {
-  
+  screen and (-webkit-device-pixel-ratio: 3),
+  screen and (device-width: 411px) and (device-height: 731px),
+  screen and (device-width: 393px) and (device-height: 851px) {
   .chat-container {
     height: calc(100vh - 20px);
-    height: calc(100svh - 20px); /* Small viewport height for Pixel */
+    height: calc(100svh - 20px);
     min-height: calc(100vh - 20px);
   }
 
@@ -1490,6 +1681,19 @@ app-message-skeleton {
   .messages-area {
     overscroll-behavior: contain;
     scroll-snap-type: none;
+  }
+
+  .audio-recorder .recording-controls {
+    position: relative;
+    z-index: 10000;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    .control-btn {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
   }
 }
 
@@ -1507,6 +1711,23 @@ app-message-skeleton {
       -webkit-overflow-scrolling: touch;
       transform: translate3d(0, 0, 0);
       scroll-padding-bottom: 100px;
+    }
+
+    .audio-recorder .recording-controls {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      transform: none !important;
+      z-index: 9999;
+      position: relative;
+    }
+
+    .audio-recorder .control-btn {
+      pointer-events: auto !important;
+      touch-action: manipulation;
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
   }
 }
@@ -1532,12 +1753,58 @@ app-message-skeleton {
 
   .message-field {
     ::ng-deep .mat-mdc-input-element {
-      font-size: 16px; // Prevent zoom on Android
-      /* Better touch handling */
+      font-size: 16px;
       -webkit-user-select: text;
       user-select: text;
-      /* Improve Android keyboard experience */
       -webkit-tap-highlight-color: transparent;
+    }
+  }
+
+  .send-button,
+  .audio-button {
+    transition: none !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+
+    &:active {
+      transform: scale(0.95) translateZ(0);
+      transition: none;
+    }
+
+    &:hover {
+      transform: translateZ(0);
+      box-shadow: initial;
+    }
+
+    mat-icon {
+      transition: none !important;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+  }
+
+  .audio-recorder .recording-controls {
+    gap: 10px;
+    padding: 6px;
+
+    .control-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
+      transition: none !important;
+      
+      &:active {
+        transform: scale(0.95);
+        transition: none;
+      }
     }
   }
 }
@@ -1554,6 +1821,9 @@ button, .record-btn, .control-btn {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
 }
 
 /* Add disabled state for input area */
@@ -1561,4 +1831,39 @@ button, .record-btn, .control-btn {
   opacity: 0.7;
   pointer-events: none;
   filter: grayscale(30%);
+}
+
+/* Additional mobile optimizations for button responsiveness */
+@media (max-width: 768px) {
+  button {
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    
+    &:not(.keep-transition) {
+      transition: none !important;
+    }
+    
+    &:active {
+      transform: scale(0.95) translateZ(0) !important;
+      transition: none !important;
+    }
+  }
+
+  .mat-mdc-button,
+  .mat-mdc-fab,
+  .mat-mdc-mini-fab,
+  .mat-mdc-icon-button {
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    
+    &:not(.keep-transition) {
+      transition: none !important;
+    }
+  }
 }
