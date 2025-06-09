@@ -1,6 +1,7 @@
 :host {
   display: block;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for Android */
   background: linear-gradient(135deg, #0396FF 0%, #AB82FF 100%);
   padding: 20px;
   overflow: hidden; // Prevent scrollbar on the host component
@@ -9,10 +10,14 @@
   left: 0;
   right: 0;
   bottom: 0;
+  /* Android-specific viewport handling */
+  min-height: -webkit-fill-available;
+  min-height: fill-available;
 }
 
 .chat-container {
   height: calc(100vh - 40px);
+  height: calc(100dvh - 40px); /* Dynamic viewport height for Android */
   display: flex;
   flex-direction: column;
   max-width: 1000px;
@@ -96,6 +101,9 @@
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
+  /* Android keyboard handling */
+  height: 0; /* Allow flex to determine height */
+  min-height: 0; /* Allow shrinking when keyboard appears */
   
   // Custom scrollbar styling
   &::-webkit-scrollbar {
@@ -126,7 +134,7 @@
 .message-wrapper {
   display: flex;
   margin-bottom: 16px;
-  max-width: 80%;
+  max-width: 65%; // Reduced from 80%
 
   &.own-message {
     align-self: flex-end;
@@ -178,11 +186,11 @@
 }
 
 .message-bubble {
-  padding: 16px 20px; // Increased from 12px 16px
+  padding: 12px 16px; // Reduced from 16px 20px
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: relative;
   max-width: calc(100% - 40px);
-  min-width: 120px; // Added minimum width
+  min-width: 100px; // Reduced from 120px
 }
 
 .message-sender {
@@ -193,8 +201,8 @@
 }
 
 .message-content {
-  font-size: 16px; // Increased from 15px
-  line-height: 1.5; // Increased from 1.4
+  font-size: 15px; // Reduced from 16px
+  line-height: 1.4; // Reduced from 1.5
   word-break: break-word;
 }
 
@@ -303,6 +311,10 @@
   position: relative;
   gap: 12px;
   min-height: 80px;
+  /* Android keyboard viewport handling */
+  padding-bottom: max(16px, env(keyboard-inset-height, 16px));
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+  z-index: 1000;
 }
 
 .input-wrapper {
@@ -578,9 +590,12 @@
   transition: all 0.2s ease;
   box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   mat-icon {
-    margin-left: 2px;
+    margin: 0; // Remove the left margin
     transform: rotate(-20deg);
     transition: transform 0.2s ease;
     font-size: 20px;
@@ -1020,10 +1035,16 @@ app-message-skeleton {
 @media (max-width: 768px) {
   :host {
     padding: 10px;
+    /* Android viewport fixes */
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .chat-container {
     height: calc(100vh - 20px);
+    height: calc(100dvh - 20px);
     max-width: 100%;
   }
 
@@ -1070,6 +1091,11 @@ app-message-skeleton {
   .messages-area {
     padding: 8px 12px;
     -webkit-overflow-scrolling: touch;
+    /* Android keyboard adaptation */
+    flex: 1 1 0;
+    min-height: 0;
+    /* Ensure proper scrolling when keyboard appears */
+    scroll-padding-bottom: 100px;
   }
 
   /* Message bubbles adjustments */
@@ -1146,13 +1172,20 @@ app-message-skeleton {
     line-height: 1.2;
   }
 
-  /* Input area for mobile - FIXED LAYOUT */
+  /* Input area for mobile with Android keyboard support */
   .message-input-container {
     padding: 12px 16px;
     gap: 10px;
     min-height: 76px;
     flex-wrap: nowrap; // Prevent wrapping
     align-items: center;
+    /* Android keyboard handling */
+    position: sticky;
+    bottom: 0;
+    padding-bottom: max(12px, env(keyboard-inset-height, 12px));
+    z-index: 1001;
+    background-color: white;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .input-wrapper {
@@ -1176,7 +1209,10 @@ app-message-skeleton {
     }
 
     ::ng-deep .mat-mdc-input-element {
-      font-size: 16px; // Prevent zoom on iOS
+      font-size: 16px; // Prevent zoom on Android
+      /* Android keyboard improvements */
+      -webkit-appearance: none;
+      transform: translateZ(0);
     }
   }
 
@@ -1430,15 +1466,78 @@ app-message-skeleton {
   }
 }
 
+/* Google Pixel specific fixes */
+@media screen and (-webkit-device-pixel-ratio: 2.625),
+       screen and (-webkit-device-pixel-ratio: 3),
+       screen and (device-width: 411px) and (device-height: 731px),
+       screen and (device-width: 393px) and (device-height: 851px) {
+  
+  .chat-container {
+    height: calc(100vh - 20px);
+    height: calc(100svh - 20px); /* Small viewport height for Pixel */
+    min-height: calc(100vh - 20px);
+  }
+
+  .message-input-container {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #eaeaea;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1003;
+  }
+
+  .messages-area {
+    overscroll-behavior: contain;
+    scroll-snap-type: none;
+  }
+}
+
+/* Android Chrome specific improvements */
+@supports (-webkit-appearance: none) {
+  @media (max-width: 768px) {
+    .message-input-container {
+      position: -webkit-sticky;
+      position: sticky;
+      bottom: 0;
+      z-index: 1002;
+    }
+
+    .messages-area {
+      -webkit-overflow-scrolling: touch;
+      transform: translate3d(0, 0, 0);
+      scroll-padding-bottom: 100px;
+    }
+  }
+}
+
+/* Android WebView specific fixes */
+@media screen and (max-width: 768px) {
+  .chat-container {
+    contain: layout style paint;
+    will-change: height;
+  }
+
+  .message-input-container {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
 /* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
   .message-input-container {
-    padding-bottom: env(safe-area-inset-bottom, 12px);
+    padding-bottom: max(env(safe-area-inset-bottom, 12px), env(keyboard-inset-height, 12px));
   }
 
   .message-field {
     ::ng-deep .mat-mdc-input-element {
-      font-size: 16px; // Prevent zoom on iOS
+      font-size: 16px; // Prevent zoom on Android
+      /* Better touch handling */
+      -webkit-user-select: text;
+      user-select: text;
+      /* Improve Android keyboard experience */
+      -webkit-tap-highlight-color: transparent;
     }
   }
 }
