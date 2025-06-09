@@ -58,6 +58,14 @@
             hidePassword ? "visibility_off" : "visibility"
           }}</mat-icon>
         </button>
+        <mat-error
+          *ngIf="
+            loginForm.controls['password']?.invalid &&
+            loginForm.controls['password']?.touched
+          "
+        >
+          Password is required
+        </mat-error>
       </mat-form-field>
 
       <button
