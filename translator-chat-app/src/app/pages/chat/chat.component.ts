@@ -52,6 +52,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScrollToBottom = false;
   private previousLoadingState = true;
   
+  isSending = false;
+  isSendingText = false;
+  private sendTimeout: any = null;
+  private readonly SEND_TIMEOUT_DURATION = 3000; // 3 seconds timeout
+  private readonly AUDIO_SEND_TIMEOUT_DURATION = 15000; // 15 seconds timeout
+
   // For progressive loading
   pageSize = 20;
   currentPage = 1;
@@ -189,6 +195,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.typingTimeout) {
       clearTimeout(this.typingTimeout);
     }
+     // Clean up send timeout
+    if (this.sendTimeout) {
+      clearTimeout(this.sendTimeout);
+    }
   }
 
   shouldShowDateDivider(index: number): boolean {
@@ -278,54 +288,62 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  onScroll(event: any): void {
-    // Load more messages when scrolling near the top
-    if (event.target.scrollTop < 100 && this.hasMoreMessages && !this.isLoadingMore) {
+onScroll(event: any): void {
+    const target = event.target;
+    // Load more messages when scrolling near the BOTTOM to fetch newer messages.
+    if (target.scrollHeight - target.scrollTop - target.clientHeight < 150) {
       this.loadMoreMessages();
     }
   }
 
-loadMessages(initial = true) {
+ loadMessages(initial = true) {
     if (initial) {
       this.loadingSubject.next(true);
+      // Reset state for a fresh load
       this.currentPage = 1;
-    } else {
-      this.isLoadingMore = true;
+      this.hasMoreMessages = true;
+      this.messages = [];
+    }
+
+    // Prevent making a request if we know there are no more messages or are already loading
+    if (!this.hasMoreMessages || this.isLoadingMore) {
+      if (!this.hasMoreMessages) console.log('No more messages to load.');
+      this.isLoadingMore = false;
+      return;
     }
     
+    this.isLoadingMore = true;
+
     this.messageService.getMessages(this.currentUser.username, this.currentPage, this.pageSize).subscribe({
-      next: (msgs) => {
-        if (initial) {
-          this.messages = msgs;
-          this.loadingSubject.next(false);
-          // We'll let ngAfterViewChecked handle scrolling after loading completes
-        } else {
-          // Save scroll position before adding older messages
-          const scrollContainer = this.scrollContainer.nativeElement;
-          const oldScrollHeight = scrollContainer.scrollHeight;
-          const oldScrollTop = scrollContainer.scrollTop;
-          
-          // Prepend older messages
-          this.messages = [...msgs, ...this.messages];
+      next: (newMessages) => {
+        if (initial) this.loadingSubject.next(false);
+
+        // If the API returns an empty array, we've reached the end.
+        if (!newMessages || newMessages.length === 0) {
+          this.hasMoreMessages = false;
           this.isLoadingMore = false;
-          
-          // Restore scroll position relative to new content after next view check
-          setTimeout(() => {
-            const newScrollHeight = scrollContainer.scrollHeight;
-            const scrollOffset = newScrollHeight - oldScrollHeight;
-            scrollContainer.scrollTop = oldScrollTop + scrollOffset;
-          }, 0);
+          return;
         }
+
+        // DO NOT REVERSE. We assume the API sends messages in chronological order (oldest first).
+        // We will append the newer messages to the end of the list.
+        this.messages = [...this.messages, ...newMessages];
+
+        // If we received less than a full page of messages, it's the last page.
+        this.hasMoreMessages = newMessages.length === this.pageSize;
         
-        // Check if we have more messages to load
-        this.hasMoreMessages = msgs.length >= this.pageSize;
-        this.currentPage++;
+        // Only increment the page if there might be more messages
+        if (this.hasMoreMessages) {
+          this.currentPage++;
+        }
+
+        this.isLoadingMore = false;
       },
       error: (error) => {
         console.error('Error loading messages:', error);
-        this.loadingSubject.next(false);
         this.isLoadingMore = false;
-        // Display error notification
+        if (initial) this.loadingSubject.next(false);
+        this.snackBar.open('Failed to load messages.', 'Dismiss', { duration: 3000 });
       }
     });
   }
@@ -333,24 +351,67 @@ loadMessages(initial = true) {
 
   loadMoreMessages(): void {
     if (this.hasMoreMessages && !this.isLoadingMore) {
-      this.isLoadingMore = true;
       this.loadMessages(false);
     }
   }
 
+
   sendMessage() {
-    if (!this.newMessage.trim()) return;
+    // Prevent sending if already sending or no message content
+    if (!this.newMessage.trim() || this.isSending) return;
+
+    // Set sending state
+    this.isSending = true;
+    this.isSendingText = true;
+    
+    // Store the message to send
+    const messageToSend = this.newMessage.trim();
+    
+    // Clear the input immediately for better UX
+    this.newMessage = '';
+    this.stopTypingIndicator();
 
     const payload = {
       senderUsername: this.currentUser.username,
-      originalText: this.newMessage,
+      originalText: messageToSend,
     };
 
-    this.messageService.sendMessage(payload).subscribe(() => {
-      this.newMessage = '';
-      this.stopTypingIndicator();
+    // Set timeout to re-enable send button after specified duration
+    this.sendTimeout = setTimeout(() => {
+      this.isSending = false;
+      this.isSendingText = false;
+      console.log('Send button timeout completed - button re-enabled');
+    }, this.SEND_TIMEOUT_DURATION);
+
+    this.messageService.sendMessage(payload).subscribe({
+      next: (response) => {
+        console.log('Message sent successfully:', response);
+        // Message sent successfully - button will be re-enabled by timeout
+        this.shouldScrollToBottom = true;
+      },
+      error: (error) => {
+        console.error('Error sending message:', error);
+        
+        // Re-enable send button immediately on error
+        this.isSending = false;
+        this.isSendingText = false;
+        if (this.sendTimeout) {
+          clearTimeout(this.sendTimeout);
+          this.sendTimeout = null;
+        }
+        
+        // Restore the message to input field on error
+        this.newMessage = messageToSend;
+        
+        // Show error notification
+        this.snackBar.open('Failed to send message. Please try again.', 'Dismiss', {
+          duration: 4000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+          panelClass: ['error-snackbar']
+        });
+      }
     });
-    this.shouldScrollToBottom = true;
   }
 
   // --- AUDIO RECORDING UI LOGIC ---
@@ -432,14 +493,31 @@ loadMessages(initial = true) {
     audio.play();
   }
 
-  sendAudio() {
-    if (!this.audioBlob) return;
+   sendAudio() {
+    if (!this.audioBlob || this.isSending) return;
+    
+    if (this.sendTimeout) {
+      clearTimeout(this.sendTimeout);
+    }
+    
+    // Set sending state
+    this.isSending = true;
+    this.isSendingText = false; 
+
+     // Set timeout to re-enable send button
+    this.sendTimeout = setTimeout(() => {
+      console.warn('Audio send timeout reached. Resetting UI.');
+      this.isSending = false;
+      // We leave the audio blob so the user can try again.
+    }, this.AUDIO_SEND_TIMEOUT_DURATION);
+    
     const localId = Date.now().toString() + Math.random().toString().slice(2);
     const formData = new FormData();
     formData.append('file', this.audioBlob, 'recording.wav');
     formData.append('senderUsername', this.currentUser.username);
     formData.append('localId', localId);
-  
+
+
     // Add the audio message to the chat immediately
     const localMsg = {
       senderUsername: this.currentUser.username,
@@ -447,10 +525,10 @@ loadMessages(initial = true) {
       timestamp: new Date().toISOString(),
       translatedText: '(Sending audio...)',
       pending: true,
-      localId: localId,  // Ensure localId is set consistently
-      isProcessed: false // Flag to mark when server has processed this
+      localId: localId,
+      isProcessed: false
     };
-  
+
     // Read the blob as base64 for local playback
     const reader = new FileReader();
     reader.onload = () => {
@@ -459,23 +537,67 @@ loadMessages(initial = true) {
       setTimeout(() => this.scrollToBottom(), 100);
     };
     reader.readAsDataURL(this.audioBlob);
-  
+
     this.messageService.sendAudio(formData).subscribe({
       next: (response) => {
+        console.log('Audio sent successfully:', response);
+
+        clearTimeout(this.sendTimeout);
+        this.sendTimeout = null;
+
         this.audioBlob = null;
+        this.isSending = false;
         this.isRecording = false;
+        // Button will be re-enabled by timeout
+        this.shouldScrollToBottom = true;
       },
       error: (error) => {
         console.error('Error sending audio:', error);
+
+        clearTimeout(this.sendTimeout);
+        this.sendTimeout = null;
+        
+        // Re-enable send button immediately on error
+        this.isSending = false;
+        if (this.sendTimeout) {
+          clearTimeout(this.sendTimeout);
+          this.sendTimeout = null;
+        }
+        
         // Find and mark the message as failed
         const idx = this.messages.findIndex(m => m.localId === localId);
         if (idx !== -1) {
           this.messages[idx].translatedText = '(Failed to send audio)';
           this.messages[idx].pending = false;
         }
+        
+        // Show error notification
+        this.snackBar.open('Failed to send audio message. Please try again.', 'Dismiss', {
+          duration: 4000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+          panelClass: ['error-snackbar']
+        });
       }
     });
-    this.shouldScrollToBottom = true;
+  }
+
+isSendButtonDisabled(): boolean {
+    // Disable if loading, sending, recording, an audio blob exists, or no text is entered.
+    return this.loading || this.isSending || this.isRecording || !!this.audioBlob || !this.newMessage.trim();
+  }
+
+   getSendButtonTooltip(): string {
+    if (this.isRecording) {
+      return 'Recording in progress...';
+    }
+    if (this.isSending) {
+      return 'Sending message...';
+    }
+    if (!this.newMessage.trim() && !this.audioBlob) {
+      return 'Type a message or record audio to send';
+    }
+    return 'Send message';
   }
   
   // WAV encoding helper

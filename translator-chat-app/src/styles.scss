@@ -2,24 +2,17 @@
 
 html, body {
   height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
+  overflow: hidden !important; /* Prevent page scroll */
+  overscroll-behavior: contain;
 }
 
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  min-height: 100vh;
-  min-width: 100vw;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f7f8fa; // Optional: subtle background
-  overflow: auto;
+  background: #f7f8fa; /* Optional: subtle background */
+  /* Remove flex centering and size constraints, let app-root fill viewport */
 }
 
 app-root {
