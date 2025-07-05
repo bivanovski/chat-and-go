@@ -8,17 +8,17 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MessageService } from '../../services/message.service';
 import { SignalrService } from '../../services/signalr.service';
 import { LanguageService } from '../../services/language.service';
 import { AuthService } from '../../services/auth.service';
+import { ChatService } from '../../services/chat.service';
 import { LanguageDialogComponent } from '../../dialogs/language-dialog/language-dialog.component';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, BehaviorSubject, timer } from 'rxjs';
-import { debounce } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { MessageSkeletonComponent } from '../../message-skeleton/message-skeleton.component';
 
 @Component({
@@ -34,8 +34,8 @@ import { MessageSkeletonComponent } from '../../message-skeleton/message-skeleto
     MatIconModule,
     MatTooltipModule,
     MatDialogModule,
-    FlexLayoutModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
     MessageSkeletonComponent 
   ],
   templateUrl: './chat.component.html',
@@ -43,61 +43,94 @@ import { MessageSkeletonComponent } from '../../message-skeleton/message-skeleto
 })
 export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollMe') scrollContainer!: ElementRef;
+  
+  // User and chat properties
   currentUser: any;
+  currentChatId: string | null = null;
+  chatParticipants: any[] = [];
+  chatTitle: string = '';
+  chatInfo: any = null;
+  
+  // Message properties
   messages: any[] = [];
   newMessage: string = '';
-  recordingDuration = 0;
-  private recordingTimer: any = null;
   loading = true;
   private shouldScrollToBottom = false;
   private previousLoadingState = true;
   
-  // For progressive loading
+  // Pagination properties
   pageSize = 20;
   currentPage = 1;
   hasMoreMessages = true;
   isLoadingMore = false;
   
-  // For skeleton loaders
-  skeletonCount = 5;
-  private loadingSubject = new BehaviorSubject<boolean>(true);
-  private messageSubscription?: Subscription;
-
+  // Audio recording properties
   isRecording = false;
   audioBlob: Blob | null = null;
+  recordingDuration = 0;
+  private recordingTimer: any = null;
   private audioContext!: AudioContext;
   private mediaStream!: MediaStream;
   private input!: MediaStreamAudioSourceNode;
   private recorder: ScriptProcessorNode | null = null;
   private audioData: Float32Array[] = [];
+  
+  // Audio playback properties
   currentPlayingIndex: number | null = null;
   currentAudio: HTMLAudioElement | null = null;
+  
+  // Typing indicator properties
   typingUsers = new Set<string>();
   private typingTimeout: any = null;
+  
+  // Loading and subscription management
+  skeletonCount = 5;
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+  private messageSubscription?: Subscription;
+  private routeSubscription?: Subscription;
+  
+  // Language mapping
+  languageMap: Record<string, string> = {};
 
   constructor(
     private messageService: MessageService,
     private signalRService: SignalrService,
     private languageService: LanguageService,
     private authService: AuthService,
+    private chatService: ChatService,
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {
     // Set up loading subject with debounce to prevent flickering
     this.loadingSubject
-      .pipe(debounce(() => timer(300)))
+      .pipe(debounceTime(300))
       .subscribe(isLoading => this.loading = isLoading);
   }
-
-  languageMap: Record<string, string> = {};
 
   ngOnInit(): void {
     const stored = sessionStorage.getItem('user');
     this.currentUser = stored ? JSON.parse(stored) : null;
 
-    this.loadMessages(true);
+    if (!this.currentUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
+    // Subscribe to route parameters to get chat ID
+    this.routeSubscription = this.route.paramMap.subscribe(params => {
+      this.currentChatId = params.get('id');
+      if (this.currentChatId) {
+        this.loadChatInfo();
+        this.loadMessages(true);
+      } else {
+        // If no chat ID, redirect to home
+        this.router.navigate(['/home']);
+      }
+    });
+
+    // Load language mappings
     this.languageService.getLanguages().subscribe({
       next: (langs) => {
         this.languageMap = langs.reduce((map, lang) => {
@@ -105,21 +138,36 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           return map;
         }, {} as Record<string, string>);
       },
+      error: (error) => {
+        console.error('Error loading languages:', error);
+      }
     });
 
+    // Set up SignalR connection
     this.signalRService.connect((textData) => {
-    console.log('💬 Text message received:', textData);
-    this.messages.push({
-      senderUsername: textData.senderUsername ?? textData.SenderUsername ?? textData.sender,
-      originalText: textData.originalText ?? textData.OriginalText,
-      translatedText: textData.translatedText ?? textData.TranslatedText,
-      timestamp: textData.timestamp ?? textData.Timestamp,
+      console.log('💬 Text message received:', textData);
+      
+      // Only add message if it's for the current chat
+      if (textData.chatId === this.currentChatId) {
+        this.messages.push({
+          senderUsername: textData.senderUsername ?? textData.SenderUsername ?? textData.sender,
+          originalText: textData.originalText ?? textData.OriginalText,
+          translatedText: textData.translatedText ?? textData.TranslatedText,
+          timestamp: textData.timestamp ?? textData.Timestamp,
+          chatId: textData.chatId
+        });
+        this.shouldScrollToBottom = true;
+      }
     });
-    this.shouldScrollToBottom = true; // Set flag to scroll after view update
-  });
 
     this.signalRService.onAudioMessage((audioData) => {
       console.log('🎵 Audio message received:', audioData);
+      
+      // Only process if it's for the current chat
+      if (audioData.chatId !== this.currentChatId) {
+        return;
+      }
+      
       const isSelfMessage = audioData.sender === this.currentUser.username;
     
       // Ignore audio messages with empty or missing audio content
@@ -150,7 +198,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.messages[idx].pending = false;
         this.messages[idx].timestamp = audioData.timestamp;
         this.messages[idx].isProcessed = true;
-        this.messages[idx].localId = undefined; // Clear localId after processing
+        this.messages[idx].localId = undefined;
       } else if (!isSelfMessage) {
         // Only add new message if it's from someone else
         console.log('Adding new message from another user');
@@ -159,10 +207,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           audioContent: audioData.audio,
           timestamp: audioData.timestamp,
           translatedText: `(Audio in ${audioData.language})`,
-          isProcessed: true
+          isProcessed: true,
+          chatId: audioData.chatId
         });
       } else {
-        // Do not add or update anything if it's a duplicate self message
         console.log('Ignoring duplicate self message', audioData);
       }
     
@@ -185,107 +233,46 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
     }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
     this.signalRService.disconnect();
     if (this.typingTimeout) {
       clearTimeout(this.typingTimeout);
     }
+    if (this.recordingTimer) {
+      clearInterval(this.recordingTimer);
+    }
   }
 
-  shouldShowDateDivider(index: number): boolean {
-    if (index === 0) return true;
-    const current = new Date(this.messages[index].timestamp);
-    const previous = new Date(this.messages[index - 1].timestamp);
-    return (
-      current.getFullYear() !== previous.getFullYear() ||
-      current.getMonth() !== previous.getMonth() ||
-      current.getDate() !== previous.getDate()
-    );
-  }
-  
-  getDateLabel(timestamp: string): string {
-    const date = new Date(timestamp);
-    const today = new Date();
-    if (
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate()
-    ) {
-      return 'Today';
-    }
-    // Optionally, handle "Yesterday"
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-    if (
-      date.getFullYear() === yesterday.getFullYear() &&
-      date.getMonth() === yesterday.getMonth() &&
-      date.getDate() === yesterday.getDate()
-    ) {
-      return 'Yesterday';
-    }
-    // Otherwise, return formatted date
-    return date.toLocaleDateString();
-  }
-
-  getTypingUsernames(): string[] {
-    return Array.from(this.typingUsers);
-  }
-
-  onTyping(): void {
-    if (this.typingTimeout) {
-      clearTimeout(this.typingTimeout);
-    } else {
-      this.signalRService.sendTypingStatus(true);
-    }
-    this.typingTimeout = setTimeout(() => {
-      this.signalRService.sendTypingStatus(false);
-      this.typingTimeout = null;
-    }, 1500);
-  }
-
-  stopTypingIndicator(): void {
-    if (this.typingTimeout) {
-      clearTimeout(this.typingTimeout);
-      this.typingTimeout = null;
-    }
-    this.signalRService.sendTypingStatus(false);
-  }
-
-   ngAfterViewChecked() {
-    // Check if loading state changed from true to false (messages finished loading)
-    if (this.previousLoadingState === true && this.loading === false) {
-      this.scrollToBottom();
-    }
+  // Load chat information and participants
+  loadChatInfo(): void {
+    if (!this.currentChatId) return;
     
-    // Also scroll if flag is set (for new messages)
-    if (this.shouldScrollToBottom) {
-      this.scrollToBottom();
-      this.shouldScrollToBottom = false;
-    }
-    
-    // Update previous loading state
-    this.previousLoadingState = this.loading;
-  }
-
-  scrollToBottom(): void {
-    try {
-      if (this.scrollContainer && this.scrollContainer.nativeElement) {
-        this.scrollContainer.nativeElement.scrollTop = 
-          this.scrollContainer.nativeElement.scrollHeight;
-        console.log('Scrolled to bottom:', this.scrollContainer.nativeElement.scrollHeight);
+    this.chatService.getChatParticipants(this.currentChatId).subscribe({
+      next: (participants) => {
+        this.chatParticipants = participants;
+        // Set chat title based on participants
+        if (participants.length <= 2) {
+          // Private chat - show other person's name
+          const otherParticipant = participants.find(p => p.username !== this.currentUser.username);
+          this.chatTitle = otherParticipant ? `Chat with ${otherParticipant.username}` : 'Private Chat';
+        } else {
+          // Group chat
+          this.chatTitle = `Group Chat (${participants.length} members)`;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading chat info:', error);
+        this.snackBar.open('Failed to load chat information', 'Dismiss', { duration: 3000 });
+        this.router.navigate(['/home']);
       }
-    } catch (err) {
-      console.error('Error scrolling to bottom:', err);
-    }
+    });
   }
 
-  onScroll(event: any): void {
-    // Load more messages when scrolling near the top
-    if (event.target.scrollTop < 100 && this.hasMoreMessages && !this.isLoadingMore) {
-      this.loadMoreMessages();
-    }
-  }
+  loadMessages(initial = true): void {
+    if (!this.currentChatId) return;
 
-loadMessages(initial = true) {
     if (initial) {
       this.loadingSubject.next(true);
       this.currentPage = 1;
@@ -293,12 +280,17 @@ loadMessages(initial = true) {
       this.isLoadingMore = true;
     }
     
-    this.messageService.getMessages(this.currentUser.username, this.currentPage, this.pageSize).subscribe({
+    // Use the chat-specific endpoint
+    this.messageService.getMessagesInChat(
+      this.currentChatId, 
+      this.currentUser.username, 
+      (this.currentPage - 1) * this.pageSize, 
+      this.pageSize
+    ).subscribe({
       next: (msgs) => {
         if (initial) {
           this.messages = msgs;
           this.loadingSubject.next(false);
-          // We'll let ngAfterViewChecked handle scrolling after loading completes
         } else {
           // Save scroll position before adding older messages
           const scrollContainer = this.scrollContainer.nativeElement;
@@ -325,11 +317,10 @@ loadMessages(initial = true) {
         console.error('Error loading messages:', error);
         this.loadingSubject.next(false);
         this.isLoadingMore = false;
-        // Display error notification
+        this.snackBar.open('Failed to load messages', 'Dismiss', { duration: 3000 });
       }
     });
   }
-  
 
   loadMoreMessages(): void {
     if (this.hasMoreMessages && !this.isLoadingMore) {
@@ -338,32 +329,135 @@ loadMessages(initial = true) {
     }
   }
 
-  sendMessage() {
-    if (!this.newMessage.trim()) return;
+  sendMessage(): void {
+    if (!this.newMessage.trim() || !this.currentChatId) return;
 
     const payload = {
       senderUsername: this.currentUser.username,
-      originalText: this.newMessage,
+      content: this.newMessage,
+      chatId: this.currentChatId
     };
 
-    this.messageService.sendMessage(payload).subscribe(() => {
-      this.newMessage = '';
-      this.stopTypingIndicator();
+    this.messageService.sendMessage(payload).subscribe({
+      next: () => {
+        this.newMessage = '';
+        this.stopTypingIndicator();
+      },
+      error: (error) => {
+        console.error('Error sending message:', error);
+        this.snackBar.open('Failed to send message', 'Dismiss', { duration: 3000 });
+      }
     });
     this.shouldScrollToBottom = true;
   }
 
-  // --- AUDIO RECORDING UI LOGIC ---
+  // Navigation method
+  goBack(): void {
+    this.router.navigate(['/home']);
+  }
 
-  startRecording() {
+  // Date and time utilities
+  shouldShowDateDivider(index: number): boolean {
+    if (index === 0) return true;
+    const current = new Date(this.messages[index].timestamp);
+    const previous = new Date(this.messages[index - 1].timestamp);
+    return (
+      current.getFullYear() !== previous.getFullYear() ||
+      current.getMonth() !== previous.getMonth() ||
+      current.getDate() !== previous.getDate()
+    );
+  }
+  
+  getDateLabel(timestamp: string): string {
+    const date = new Date(timestamp);
+    const today = new Date();
+    if (
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate()
+    ) {
+      return 'Today';
+    }
+    
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    if (
+      date.getFullYear() === yesterday.getFullYear() &&
+      date.getMonth() === yesterday.getMonth() &&
+      date.getDate() === yesterday.getDate()
+    ) {
+      return 'Yesterday';
+    }
+    
+    return date.toLocaleDateString();
+  }
+
+  // Typing indicator methods
+  getTypingUsernames(): string[] {
+    return Array.from(this.typingUsers);
+  }
+
+  onTyping(): void {
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+    } else {
+      this.signalRService.sendTypingStatus(true);
+    }
+    this.typingTimeout = setTimeout(() => {
+      this.signalRService.sendTypingStatus(false);
+      this.typingTimeout = null;
+    }, 1500);
+  }
+
+  stopTypingIndicator(): void {
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+      this.typingTimeout = null;
+    }
+    this.signalRService.sendTypingStatus(false);
+  }
+
+  // Scroll management
+  ngAfterViewChecked(): void {
+    if (this.previousLoadingState === true && this.loading === false) {
+      this.scrollToBottom();
+    }
+    
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
+    
+    this.previousLoadingState = this.loading;
+  }
+
+  scrollToBottom(): void {
+    try {
+      if (this.scrollContainer && this.scrollContainer.nativeElement) {
+        this.scrollContainer.nativeElement.scrollTop = 
+          this.scrollContainer.nativeElement.scrollHeight;
+      }
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
+    }
+  }
+
+  onScroll(event: any): void {
+    if (event.target.scrollTop < 100 && this.hasMoreMessages && !this.isLoadingMore) {
+      this.loadMoreMessages();
+    }
+  }
+
+  // Audio recording methods
+  startRecording(): void {
     this.isRecording = true;
     this.audioBlob = null;
     this.audioData = [];
     this.recordingDuration = 0;
     this.recordingTimer = setInterval(() => this.recordingDuration++, 1000);
+    
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      this.audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.mediaStream = stream;
       this.input = this.audioContext.createMediaStreamSource(stream);
 
@@ -375,19 +469,33 @@ loadMessages(initial = true) {
       };
       this.input.connect(this.recorder);
       this.recorder.connect(this.audioContext.destination);
+    }).catch((error) => {
+      console.error('Error accessing microphone:', error);
+      this.snackBar.open('Failed to access microphone', 'Dismiss', { duration: 3000 });
+      this.isRecording = false;
     });
   }
 
-  stopRecording() {
+  stopRecording(): void {
     if (!this.isRecording) return;
     this.isRecording = false;
+    
     if (this.recordingTimer) {
       clearInterval(this.recordingTimer);
       this.recordingTimer = null;
     }
-    this.mediaStream.getTracks().forEach((track) => track.stop());
-    this.input.disconnect();
-    this.recorder?.disconnect();
+    
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach((track) => track.stop());
+    }
+    
+    if (this.input) {
+      this.input.disconnect();
+    }
+    
+    if (this.recorder) {
+      this.recorder.disconnect();
+    }
 
     const flat = Float32Array.from(
       (this.audioData as Float32Array[]).flatMap((arr) => Array.from(arr))
@@ -395,29 +503,7 @@ loadMessages(initial = true) {
     this.audioBlob = this.encodeWAV(flat, this.audioContext.sampleRate);
   }
 
-  playPreview() {
-    if (!this.audioBlob) return;
-
-    // Stop any currently playing audio
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentAudio = null;
-      this.currentPlayingIndex = null;
-    }
-
-    // Play the preview
-    const audio = new Audio(URL.createObjectURL(this.audioBlob));
-    audio.onended = () => {
-      // Reset when preview finished playing
-    };
-    audio.play();
-  }
-
-  cancelRecording() {
-    this.audioBlob = null;
-  }
-
-  toggleRecording() {
+  toggleRecording(): void {
     if (this.isRecording) {
       this.stopRecording();
     } else {
@@ -425,19 +511,40 @@ loadMessages(initial = true) {
     }
   }
 
-  playAudioBlob() {
+  playPreview(): void {
     if (!this.audioBlob) return;
-    const url = URL.createObjectURL(this.audioBlob);
-    const audio = new Audio(url);
-    audio.play();
+
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio = null;
+      this.currentPlayingIndex = null;
+    }
+
+    const audio = new Audio(URL.createObjectURL(this.audioBlob));
+    audio.onended = () => {
+      // Reset when preview finished playing
+    };
+    audio.play().catch((error) => {
+      console.error('Error playing preview:', error);
+      this.snackBar.open('Failed to play preview', 'Dismiss', { duration: 3000 });
+    });
   }
 
-  sendAudio() {
-    if (!this.audioBlob) return;
+  cancelRecording(): void {
+    this.audioBlob = null;
+    if (this.isRecording) {
+      this.stopRecording();
+    }
+  }
+
+  sendAudio(): void {
+    if (!this.audioBlob || !this.currentChatId) return;
+    
     const localId = Date.now().toString() + Math.random().toString().slice(2);
     const formData = new FormData();
     formData.append('file', this.audioBlob, 'recording.wav');
     formData.append('senderUsername', this.currentUser.username);
+    formData.append('chatId', this.currentChatId);
     formData.append('localId', localId);
   
     // Add the audio message to the chat immediately
@@ -447,74 +554,101 @@ loadMessages(initial = true) {
       timestamp: new Date().toISOString(),
       translatedText: '(Sending audio...)',
       pending: true,
-      localId: localId,  // Ensure localId is set consistently
-      isProcessed: false // Flag to mark when server has processed this
+      localId: localId,
+      isProcessed: false,
+      chatId: this.currentChatId
     };
   
     // Read the blob as base64 for local playback
     const reader = new FileReader();
     reader.onload = () => {
-      localMsg.audioContent = (reader.result as string).split(',')[1];
-      this.messages.push(localMsg);
-      setTimeout(() => this.scrollToBottom(), 100);
+      if (reader.result) {
+        localMsg.audioContent = (reader.result as string).split(',')[1];
+        this.messages.push(localMsg);
+        setTimeout(() => this.scrollToBottom(), 100);
+      }
     };
     reader.readAsDataURL(this.audioBlob);
   
     this.messageService.sendAudio(formData).subscribe({
-      next: (response) => {
+      next: () => {
         this.audioBlob = null;
         this.isRecording = false;
       },
       error: (error) => {
         console.error('Error sending audio:', error);
-        // Find and mark the message as failed
         const idx = this.messages.findIndex(m => m.localId === localId);
         if (idx !== -1) {
           this.messages[idx].translatedText = '(Failed to send audio)';
           this.messages[idx].pending = false;
         }
+        this.snackBar.open('Failed to send audio message', 'Dismiss', { duration: 3000 });
       }
     });
     this.shouldScrollToBottom = true;
   }
-  
-  // WAV encoding helper
-  encodeWAV(samples: Float32Array, sampleRate: number): Blob {
-    function floatTo16BitPCM(
-      output: DataView,
-      offset: number,
-      input: Float32Array
-    ) {
-      for (let i = 0; i < input.length; i++, offset += 2) {
-        let s = Math.max(-1, Math.min(1, input[i]));
-        output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
-      }
+
+  // Audio playback methods
+  playOrPauseAudio(base64: string, idx: number): void {
+    if (this.currentPlayingIndex === idx && this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentPlayingIndex = null;
+      this.currentAudio = null;
+      return;
     }
-    const buffer = new ArrayBuffer(44 + samples.length * 2);
-    const view = new DataView(buffer);
 
-    // RIFF identifier
-    [0x52, 0x49, 0x46, 0x46].forEach((b, i) => view.setUint8(i, b));
-    view.setUint32(4, 36 + samples.length * 2, true);
-    [0x57, 0x41, 0x56, 0x45].forEach((b, i) => view.setUint8(8 + i, b));
-    [0x66, 0x6d, 0x74, 0x20].forEach((b, i) => view.setUint8(12 + i, b));
-    view.setUint32(16, 16, true); // Subchunk1Size
-    view.setUint16(20, 1, true); // AudioFormat
-    view.setUint16(22, 1, true); // NumChannels
-    view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * 2, true); // ByteRate
-    view.setUint16(32, 2, true); // BlockAlign
-    view.setUint16(34, 16, true); // BitsPerSample
-    [0x64, 0x61, 0x74, 0x61].forEach((b, i) => view.setUint8(36 + i, b));
-    view.setUint32(40, samples.length * 2, true);
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+      this.currentAudio = null;
+      this.currentPlayingIndex = null;
+    }
 
-    floatTo16BitPCM(view, 44, samples);
+    const audioBlob = this.signalRService.base64ToBlob(base64, 'audio/wav');
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
 
-    return new Blob([view], { type: 'audio/wav' });
+    audio.onloadedmetadata = () => {
+      if (!this.messages[idx].audioDuration || this.messages[idx].audioDuration === 0) {
+        this.messages[idx].audioDuration = audio.duration;
+      }
+    };
+
+    audio.onended = () => {
+      this.currentPlayingIndex = null;
+      this.currentAudio = null;
+    };
+
+    audio.onerror = () => {
+      this.currentPlayingIndex = null;
+      this.currentAudio = null;
+      this.snackBar.open('Failed to play audio', 'Dismiss', { duration: 3000 });
+    };
+
+    this.currentPlayingIndex = idx;
+    this.currentAudio = audio;
+    audio.play().catch((error) => {
+      console.error('Audio playback failed:', error);
+      this.currentPlayingIndex = null;
+      this.currentAudio = null;
+      this.snackBar.open('Audio playback failed', 'Dismiss', { duration: 3000 });
+    });
   }
 
+  formatAudioDuration(duration: number | null | undefined): string {
+    if (duration === null || duration === undefined || isNaN(duration) || duration < 0) {
+      return '00:00';
+    }
+    const totalSeconds = Math.round(duration);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  // Language and settings methods
   openLanguageDialog(): void {
     if (!this.currentUser) return;
+    
     this.languageService.getLanguages().subscribe({
       next: (languages) => {
         const dialogRef = this.dialog.open(LanguageDialogComponent, {
@@ -533,100 +667,25 @@ loadMessages(initial = true) {
           }
         });
       },
+      error: (error) => {
+        console.error('Error loading languages:', error);
+        this.snackBar.open('Failed to load languages', 'Dismiss', { duration: 3000 });
+      }
     });
   }
 
   updateUserLanguage(languageCode: string): void {
-    this.languageService
-      .updateUserLanguage(this.currentUser.username, languageCode)
-      .subscribe(() => {
+    this.languageService.updateUserLanguage(this.currentUser.username, languageCode).subscribe({
+      next: () => {
         this.currentUser.languageCode = languageCode;
         sessionStorage.setItem('user', JSON.stringify(this.currentUser));
-      });
-  }
-
-  playAudio(base64: string) {
-    try {
-      const audioBlob = this.signalRService.base64ToBlob(base64, 'audio/wav');
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-
-      audio.onerror = (error) => {
-        console.error('Error playing audio:', error);
-        alert('Failed to play audio. The format may be unsupported.');
-      };
-
-      audio.play().catch((error) => {
-        console.error('Audio playback failed:', error);
-        alert('Audio playback failed: ' + error.message);
-      });
-    } catch (error) {
-      console.error('Error processing audio:', error);
-      alert('Failed to process audio data');
-    }
-  }
-
-  playOrPauseAudio(base64: string, idx: number) {
-    // If already playing this audio, pause it
-    if (this.currentPlayingIndex === idx && this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentPlayingIndex = null;
-      return;
-    }
-
-    // Stop any currently playing audio
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentAudio.currentTime = 0;
-      this.currentAudio = null;
-      this.currentPlayingIndex = null;
-    }
-
-    // Play new audio
-    const audioBlob = this.signalRService.base64ToBlob(base64, 'audio/wav');
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-
-    audio.onloadedmetadata = () => {
-      // Set the duration for the message if not already set or if it's 0
-      if (
-        !this.messages[idx].audioDuration ||
-        this.messages[idx].audioDuration === 0
-      ) {
-        this.messages[idx].audioDuration = audio.duration;
+        this.snackBar.open('Language updated successfully', 'Dismiss', { duration: 3000 });
+      },
+      error: (error) => {
+        console.error('Error updating language:', error);
+        this.snackBar.open('Failed to update language', 'Dismiss', { duration: 3000 });
       }
-    };
-
-    audio.onended = () => {
-      this.currentPlayingIndex = null;
-      this.currentAudio = null;
-    };
-    audio.onerror = (error) => {
-      this.currentPlayingIndex = null;
-      this.currentAudio = null;
-      alert('Failed to play audio.');
-    };
-
-    this.currentPlayingIndex = idx;
-    this.currentAudio = audio;
-    audio.play();
-  }
-
-  formatAudioDuration(duration: number | null | undefined): string {
-    if (
-      duration === null ||
-      duration === undefined ||
-      isNaN(duration) ||
-      duration < 0
-    ) {
-      return '00:00';
-    }
-    const totalSeconds = Math.round(duration);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`;
+    });
   }
 
   logout(): void {
@@ -635,10 +694,40 @@ loadMessages(initial = true) {
     this.snackBar.open('Successfully logged out!', 'Dismiss', {
       duration: 4000,
       verticalPosition: 'top',
-      horizontalPosition: 'center',
-      panelClass: ['success-snackbar'],
-      announcementMessage: 'You have been logged out successfully'
+      horizontalPosition: 'center'
     });
     this.router.navigate(['/login']);
+  }
+
+  // WAV encoding utility
+  private encodeWAV(samples: Float32Array, sampleRate: number): Blob {
+    function floatTo16BitPCM(output: DataView, offset: number, input: Float32Array): void {
+      for (let i = 0; i < input.length; i++, offset += 2) {
+        const s = Math.max(-1, Math.min(1, input[i]));
+        output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+      }
+    }
+
+    const buffer = new ArrayBuffer(44 + samples.length * 2);
+    const view = new DataView(buffer);
+
+    // RIFF identifier
+    [0x52, 0x49, 0x46, 0x46].forEach((b, i) => view.setUint8(i, b));
+    view.setUint32(4, 36 + samples.length * 2, true);
+    [0x57, 0x41, 0x56, 0x45].forEach((b, i) => view.setUint8(8 + i, b));
+    [0x66, 0x6d, 0x74, 0x20].forEach((b, i) => view.setUint8(12 + i, b));
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    [0x64, 0x61, 0x74, 0x61].forEach((b, i) => view.setUint8(36 + i, b));
+    view.setUint32(40, samples.length * 2, true);
+
+    floatTo16BitPCM(view, 44, samples);
+
+    return new Blob([view], { type: 'audio/wav' });
   }
 }

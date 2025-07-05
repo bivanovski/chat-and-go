@@ -1,0 +1,75 @@
+<div class="home-container">
+  <div class="home-header">
+    <div class="user-info">
+      <div class="user-avatar">
+        {{ currentUser?.username?.charAt(0).toUpperCase() }}
+      </div>
+      <div class="user-details">
+        <h1>Welcome, {{ currentUser?.username }}!</h1>
+        <p>Your chats and conversations</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button mat-icon-button (click)="logout()" matTooltip="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <div class="actions-section">
+      <button 
+        mat-fab 
+        extended 
+        color="primary" 
+        class="create-chat-btn"
+        (click)="openCreateChatDialog()"
+      >
+        <mat-icon>add</mat-icon>
+        Create New Chat
+      </button>
+    </div>
+
+    <div class="chats-section">
+      <h2>Your Chats</h2>
+      
+      <!-- Loading spinner -->
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading chats...</p>
+      </div>
+
+      <!-- Chat list -->
+      <div class="chat-list" *ngIf="!loading">
+        <mat-card 
+          *ngFor="let chat of chats" 
+          class="chat-card"
+          (click)="openChat(chat.id)"
+        >
+          <mat-card-content>
+            <div class="chat-info">
+              <div class="chat-icon">
+                <mat-icon>{{ chat.isGroup ? 'group' : 'person' }}</mat-icon>
+              </div>
+              <div class="chat-details">
+                <h3>{{ chat.title || (chat.isGroup ? 'Group Chat' : 'Private Chat') }}</h3>
+                <p class="chat-type">{{ chat.isGroup ? 'Group' : '1-on-1' }}</p>
+                <p class="chat-date">Created: {{ chat.createdAt | date:'short' }}</p>
+              </div>
+            </div>
+            <div class="chat-actions">
+              <mat-icon>chevron_right</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="chats.length === 0">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <h3>No chats yet</h3>
+          <p>Create your first chat to start messaging with friends!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

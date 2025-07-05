@@ -1,0 +1,92 @@
+<div class="create-chat-dialog">
+  <h2 mat-dialog-title>Create New Chat</h2>
+  
+  <mat-dialog-content class="dialog-content">
+    <!-- Chat Title -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Chat Title (Optional)</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="chatTitle" 
+        placeholder="Enter chat title..."
+        [disabled]="loading"
+      />
+    </mat-form-field>
+
+    <!-- User Selection -->
+    <div class="users-section">
+      <h3>Select Participants</h3>
+      
+      <!-- Loading users -->
+      <div class="loading-users" *ngIf="loadingUsers">
+        <mat-spinner diameter="30"></mat-spinner>
+        <p>Loading users...</p>
+      </div>
+
+      <!-- Users list -->
+      <div class="users-list" *ngIf="!loadingUsers">
+        <div 
+          *ngFor="let user of users" 
+          class="user-item"
+          [class.selected]="isUserSelected(user)"
+        >
+          <mat-checkbox
+            [checked]="isUserSelected(user)"
+            (change)="onUserSelectionChange(user, $event.checked)"
+            [disabled]="loading"
+          >
+            <div class="user-info">
+              <div class="user-avatar">
+                {{ user.username.charAt(0).toUpperCase() }}
+              </div>
+              <div class="user-details">
+                <span class="username">{{ user.username }}</span>
+                <span class="language">{{ user.languageCode }}</span>
+              </div>
+            </div>
+          </mat-checkbox>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-users" *ngIf="users.length === 0">
+          <p>No other users found</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selection summary -->
+    <div class="selection-summary" *ngIf="selectedUsers.length > 0">
+      <p>
+        <strong>Selected:</strong> {{ selectedUsers.length }} participant(s)
+        <span *ngIf="isGroup"> (Group Chat)</span>
+      </p>
+      <div class="selected-users">
+        <span 
+          *ngFor="let user of selectedUsers" 
+          class="selected-user-tag"
+        >
+          {{ user.username }}
+        </span>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button 
+      mat-button 
+      (click)="cancel()"
+      [disabled]="loading"
+    >
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="createChat()"
+      [disabled]="loading || selectedUsers.length === 0"
+    >
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+      <span *ngIf="!loading">Create Chat</span>
+    </button>
+  </mat-dialog-actions>
+</div>
