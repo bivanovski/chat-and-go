@@ -1,13 +1,23 @@
-﻿namespace AzureAICognitiveServicesAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AzureAICognitiveServicesAPI.Models
 {
     public class MessageDelivery
     {
-        public int Id { get; set; } // Primary Key
+        [Key]
+        public Guid ID { get; set; } // Primary Key
 
-        public int MessageId { get; set; } // Foreign Key to Message
+        [Required]
+        public Guid MessageId { get; set; } // Foreign Key to Message
+        
+        [ForeignKey("MessageId")]
         public Message Message { get; set; } // Navigation property
 
-        public int RecipientId { get; set; } // Foreign Key to User
+        [Required]
+        public Guid RecipientId { get; set; } // Foreign Key to User
+
+        [ForeignKey("RecipientId")]
         public User Recipient { get; set; } // Navigation property
 
         public string TranslatedText { get; set; } // The translated text of the message

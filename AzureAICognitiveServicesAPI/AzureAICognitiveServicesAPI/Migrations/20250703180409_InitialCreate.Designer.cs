@@ -4,6 +4,7 @@ using AzureAICognitiveServicesAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AzureAICognitiveServicesAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250703180409_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +48,7 @@ namespace AzureAICognitiveServicesAPI.Migrations
 
             modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.ChatParticipant", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -64,7 +67,7 @@ namespace AzureAICognitiveServicesAPI.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("ChatId");
 
@@ -105,39 +108,6 @@ namespace AzureAICognitiveServicesAPI.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.MessageDelivery", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AudioBase64")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("MessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RecipientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TranslatedText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MessageId");
-
-                    b.HasIndex("RecipientId");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("MessageDeliveries");
                 });
 
             modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.User", b =>
@@ -201,29 +171,6 @@ namespace AzureAICognitiveServicesAPI.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.MessageDelivery", b =>
-                {
-                    b.HasOne("AzureAICognitiveServicesAPI.Models.Message", "Message")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AzureAICognitiveServicesAPI.Models.User", "Recipient")
-                        .WithMany()
-                        .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("AzureAICognitiveServicesAPI.Models.User", null)
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("UserID");
-
-                    b.Navigation("Message");
-
-                    b.Navigation("Recipient");
-                });
-
             modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.Chat", b =>
                 {
                     b.Navigation("Messages");
@@ -231,18 +178,11 @@ namespace AzureAICognitiveServicesAPI.Migrations
                     b.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.Message", b =>
-                {
-                    b.Navigation("Deliveries");
-                });
-
             modelBuilder.Entity("AzureAICognitiveServicesAPI.Models.User", b =>
                 {
                     b.Navigation("ChatParticipants");
 
                     b.Navigation("MessagesSent");
-
-                    b.Navigation("ReceivedMessages");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,25 +10,25 @@ namespace AzureAICognitiveServicesAPI.Controllers
     [Route("users")]
     public class UserController : ControllerBase
     {
-       private readonly AppDbContext _context;
+        private readonly AppDbContext _context;
 
         public UserController(AppDbContext context)
         {
             _context = context;
         }
 
-        //Get: /users
+        // GET: /users
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _context.Users
-                .Select(u => new {u.ID, u.Username, u.LanguageCode})
+                .Select(u => new { u.ID, u.Username, u.LanguageCode })
                 .ToListAsync();
 
             return Ok(users);
         }
 
-        //Get: /users/{username}
+        // GET: /users/{username}
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
@@ -37,15 +37,13 @@ namespace AzureAICognitiveServicesAPI.Controllers
                 .Select(u => new { u.ID, u.Username, u.LanguageCode })
                 .FirstOrDefaultAsync();
 
-            if(user == null)
-            {
+            if (user == null)
                 return NotFound("User not found.");
-            }
 
             return Ok(user);
         }
 
-        //Get: /users/languages/azure
+        // GET: /users/languages/azure
         [HttpGet("languages/azure")]
         public async Task<IActionResult> GetAzureLanguages([FromServices] AzureLanguageService azureLanguageService)
         {
@@ -53,27 +51,24 @@ namespace AzureAICognitiveServicesAPI.Controllers
             return Ok(languages);
         }
 
-
-        //Post: /users/register
+        // POST: /users/register
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (existingUser != null)
-            {
                 return BadRequest("Username already exists.");
-            }
 
             var newUser = new User
             {
+                ID = Guid.NewGuid(),
                 Username = request.Username,
                 Password = request.Password,
-                LanguageCode = request.LanguageCode
+                LanguageCode = request.LanguageCode,
+                //RegisteredAt = DateTime.UtcNow
             };
 
             _context.Users.Add(newUser);
@@ -82,39 +77,29 @@ namespace AzureAICognitiveServicesAPI.Controllers
             return Ok(new { message = "Registration successful", newUser.Username, newUser.LanguageCode });
         }
 
-
-
-        //Post: /users/login
+        // POST: /users/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginData)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // returns proper 400 with validation errors
-            }
+                return BadRequest(ModelState);
 
-            var user = await _context.Users.FirstOrDefaultAsync(u =>
-                u.Username == loginData.Username && u.Password == loginData.Password);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == loginData.Username && u.Password == loginData.Password);
 
             if (user == null)
-            {
                 return Unauthorized("Invalid username or password.");
-            }
 
             return Ok(new { message = "Login successful", user.Username, user.LanguageCode });
         }
 
-
-
-        //Put: /users/update-lang
+        // PUT: /users/update-lang
         [HttpPut("update-lang")]
         public async Task<IActionResult> UpdateLanguage([FromBody] UpdateLanguageRequest request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null)
-            {
                 return NotFound("User not found.");
-            }
 
             user.LanguageCode = request.LanguageCode;
             await _context.SaveChangesAsync();
@@ -122,22 +107,18 @@ namespace AzureAICognitiveServicesAPI.Controllers
             return Ok(new { message = "Language updated successfully", user.Username, user.LanguageCode });
         }
 
-        // WARNING: Use this only in DEV environments
+        // DELETE: /users/dev/clear-all (for dev only)
         [HttpDelete("dev/clear-all")]
         public async Task<IActionResult> ClearAll()
         {
-            // Clear MessageDeliveries first due to FK constraints
-            _context.MessageDeliveries.RemoveRange(_context.MessageDeliveries);
             _context.Messages.RemoveRange(_context.Messages);
+            _context.ChatParticipants.RemoveRange(_context.ChatParticipants);
+            _context.Chats.RemoveRange(_context.Chats);
             _context.Users.RemoveRange(_context.Users);
 
             await _context.SaveChangesAsync();
 
             return Ok("All users and chat history cleared.");
         }
-
-
-
-
     }
 }

@@ -5,34 +5,53 @@ namespace AzureAICognitiveServicesAPI.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
-        public DbSet<User> Users { get; set; } // Table for users
-        public DbSet<Message> Messages { get; set; } // Table for messages
-        public DbSet<MessageDelivery> MessageDeliveries { get; set; } // Table for message deliveries
+        public DbSet<User> Users { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatParticipant> ChatParticipants { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<MessageDelivery> MessageDeliveries { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.SentMessages)
-                .WithOne(m => m.Sender)
-                .HasForeignKey(m => m.SenderID)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ChatParticipant>()
+                .HasOne(cp => cp.User)
+                .WithMany(u => u.ChatParticipants)
+                .HasForeignKey(cp => cp.UserId);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.ReceivedDeliveries)
-                .WithOne(md => md.Recipient)
-                .HasForeignKey(md => md.RecipientId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ChatParticipant>()
+                .HasOne(cp => cp.Chat)
+                .WithMany(c => c.Participants)
+                .HasForeignKey(cp => cp.ChatId);
 
             modelBuilder.Entity<Message>()
-                .HasMany(m => m.Deliveries)
-                .WithOne(md => md.Message)
-                .HasForeignKey(md => md.MessageId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
+                .HasOne(m => m.Chat)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(m => m.ChatId);
 
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.MessagesSent)
+                .HasForeignKey(m => m.SenderId);
+
+            modelBuilder.Entity<MessageDelivery>()
+                .HasOne(md => md.Recipient)
+                .WithMany()
+                .HasForeignKey(md => md.RecipientId)
+                .OnDelete(DeleteBehavior.NoAction); 
+
+            modelBuilder.Entity<MessageDelivery>()
+                .HasOne(md => md.Message)
+                .WithMany(m => m.Deliveries)
+                .HasForeignKey(md => md.MessageId)
+                .OnDelete(DeleteBehavior.Cascade); 
+        }
     }
 }

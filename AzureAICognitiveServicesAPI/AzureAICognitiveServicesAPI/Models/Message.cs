@@ -1,12 +1,37 @@
-﻿namespace AzureAICognitiveServicesAPI.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
+namespace AzureAICognitiveServicesAPI.Models
 {
     public class Message
     {
-        public int ID { get; set; } //Primary Key
-        public string OriginalText { get; set; } // The original text of the message
-        public DateTime Timestamp { get; set; } = DateTime.Now; // The time the message was sent
-        public int SenderID { get; set; } // Foreign Key to User
-        public User Sender { get; set; } //Navigation property
-        public ICollection<MessageDelivery> Deliveries { get; set; } = new List<MessageDelivery>(); // User list of message deliveries
+        [Key]
+        public Guid ID { get; set; } //Primary Key
+        public Guid ChatId { get; set; }
+        public Chat Chat { get; set; }
+
+        public Guid SenderId { get; set; }
+        public User Sender { get; set; }
+
+        public string Content { get; set; }
+
+        public MessageType Type { get; set; }
+
+        public DateTime SentAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsFromBot { get; set; }
+
+        public ICollection<MessageDelivery> Deliveries { get; set; }
+
+    }
+
+    public enum MessageType
+    {
+        Text,
+        Audio,
+        TranslatedText,
+        Feedback,
+        Image
     }
 }
