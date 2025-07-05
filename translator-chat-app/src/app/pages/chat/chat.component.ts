@@ -63,7 +63,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   currentPage = 1;
   hasMoreMessages = true;
   isLoadingMore = false;
-  
+
+  // Sending properties
+  isSending = false;
+  isSendingText = false;
+  private sendTimeout: any = null;
+  private readonly SEND_TIMEOUT_DURATION = 3000; // 3 seconds timeout
+  private readonly AUDIO_SEND_TIMEOUT_DURATION = 15000; // 15 seconds timeout
+
   // Audio recording properties
   isRecording = false;
   audioBlob: Blob | null = null;
@@ -146,8 +153,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     // Set up SignalR connection
     this.signalRService.connect((textData) => {
       console.log('💬 Text message received:', textData);
-      
-      // Only add message if it's for the current chat
       if (textData.chatId === this.currentChatId) {
         this.messages.push({
           senderUsername: textData.senderUsername ?? textData.SenderUsername ?? textData.sender,
@@ -162,36 +167,25 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.signalRService.onAudioMessage((audioData) => {
       console.log('🎵 Audio message received:', audioData);
-      
-      // Only process if it's for the current chat
       if (audioData.chatId !== this.currentChatId) {
         return;
       }
-      
       const isSelfMessage = audioData.sender === this.currentUser.username;
-    
-      // Ignore audio messages with empty or missing audio content
       if (!audioData.audio) {
         console.log('Ignoring audio message with empty audio content', audioData);
         return;
       }
-    
-      // Try to find a local pending message to update first by localId
       let idx = -1;
       if (audioData.localId) {
         idx = this.messages.findIndex(m => m.localId === audioData.localId);
       }
-    
-      // If not found and it's our own message, try to find by sender and pending status
       if (idx === -1 && isSelfMessage) {
         idx = this.messages.findIndex(m =>
           m.senderUsername === this.currentUser.username &&
           m.pending === true
         );
       }
-    
       if (idx !== -1) {
-        // Update existing message instead of adding a new one
         console.log('Updating existing message at index', idx);
         this.messages[idx].audioContent = audioData.audio;
         this.messages[idx].translatedText = `(Audio in ${audioData.language})`;
@@ -200,7 +194,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.messages[idx].isProcessed = true;
         this.messages[idx].localId = undefined;
       } else if (!isSelfMessage) {
-        // Only add new message if it's from someone else
         console.log('Adding new message from another user');
         this.messages.push({
           senderUsername: audioData.sender,
@@ -213,7 +206,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       } else {
         console.log('Ignoring duplicate self message', audioData);
       }
-    
       this.shouldScrollToBottom = true;
     });
     
@@ -243,22 +235,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.recordingTimer) {
       clearInterval(this.recordingTimer);
     }
+    if (this.sendTimeout) {
+      clearTimeout(this.sendTimeout);
+    }
   }
 
   // Load chat information and participants
   loadChatInfo(): void {
     if (!this.currentChatId) return;
-    
     this.chatService.getChatParticipants(this.currentChatId).subscribe({
       next: (participants) => {
         this.chatParticipants = participants;
-        // Set chat title based on participants
         if (participants.length <= 2) {
-          // Private chat - show other person's name
           const otherParticipant = participants.find(p => p.username !== this.currentUser.username);
           this.chatTitle = otherParticipant ? `Chat with ${otherParticipant.username}` : 'Private Chat';
         } else {
-          // Group chat
           this.chatTitle = `Group Chat (${participants.length} members)`;
         }
       },
@@ -279,8 +270,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     } else {
       this.isLoadingMore = true;
     }
-    
-    // Use the chat-specific endpoint
     this.messageService.getMessagesInChat(
       this.currentChatId, 
       this.currentUser.username, 
@@ -296,11 +285,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           const scrollContainer = this.scrollContainer.nativeElement;
           const oldScrollHeight = scrollContainer.scrollHeight;
           const oldScrollTop = scrollContainer.scrollTop;
-          
           // Prepend older messages
           this.messages = [...msgs, ...this.messages];
           this.isLoadingMore = false;
-          
           // Restore scroll position relative to new content after next view check
           setTimeout(() => {
             const newScrollHeight = scrollContainer.scrollHeight;
@@ -308,8 +295,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
             scrollContainer.scrollTop = oldScrollTop + scrollOffset;
           }, 0);
         }
-        
-        // Check if we have more messages to load
         this.hasMoreMessages = msgs.length >= this.pageSize;
         this.currentPage++;
       },
@@ -330,33 +315,56 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   sendMessage(): void {
-    if (!this.newMessage.trim() || !this.currentChatId) return;
+    if (!this.newMessage.trim() || !this.currentChatId || this.isSending) return;
+
+    // Set sending state
+    this.isSending = true;
+    this.isSendingText = true;
+    const messageToSend = this.newMessage.trim();
+    this.newMessage = '';
+    this.stopTypingIndicator();
 
     const payload = {
       senderUsername: this.currentUser.username,
-      content: this.newMessage,
+      content: messageToSend,
       chatId: this.currentChatId
     };
 
+    this.sendTimeout = setTimeout(() => {
+      this.isSending = false;
+      this.isSendingText = false;
+      console.log('Send button timeout completed - button re-enabled');
+    }, this.SEND_TIMEOUT_DURATION);
+
     this.messageService.sendMessage(payload).subscribe({
       next: () => {
-        this.newMessage = '';
-        this.stopTypingIndicator();
+        // Message sent successfully
+        this.shouldScrollToBottom = true;
+        // Button will be re-enabled by timeout
       },
       error: (error) => {
         console.error('Error sending message:', error);
-        this.snackBar.open('Failed to send message', 'Dismiss', { duration: 3000 });
+        this.isSending = false;
+        this.isSendingText = false;
+        if (this.sendTimeout) {
+          clearTimeout(this.sendTimeout);
+          this.sendTimeout = null;
+        }
+        this.newMessage = messageToSend; // Restore message to input
+        this.snackBar.open('Failed to send message. Please try again.', 'Dismiss', {
+          duration: 4000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+          panelClass: ['error-snackbar']
+        });
       }
     });
-    this.shouldScrollToBottom = true;
   }
 
-  // Navigation method
   goBack(): void {
     this.router.navigate(['/home']);
   }
 
-  // Date and time utilities
   shouldShowDateDivider(index: number): boolean {
     if (index === 0) return true;
     const current = new Date(this.messages[index].timestamp);
@@ -378,7 +386,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     ) {
       return 'Today';
     }
-    
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
     if (
@@ -388,11 +395,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     ) {
       return 'Yesterday';
     }
-    
     return date.toLocaleDateString();
   }
 
-  // Typing indicator methods
   getTypingUsernames(): string[] {
     return Array.from(this.typingUsers);
   }
@@ -417,17 +422,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.signalRService.sendTypingStatus(false);
   }
 
-  // Scroll management
   ngAfterViewChecked(): void {
     if (this.previousLoadingState === true && this.loading === false) {
       this.scrollToBottom();
     }
-    
     if (this.shouldScrollToBottom) {
       this.scrollToBottom();
       this.shouldScrollToBottom = false;
     }
-    
     this.previousLoadingState = this.loading;
   }
 
@@ -443,24 +445,24 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   onScroll(event: any): void {
+    // Load more messages when scrolling near the TOP to fetch older messages
     if (event.target.scrollTop < 100 && this.hasMoreMessages && !this.isLoadingMore) {
       this.loadMoreMessages();
     }
   }
 
-  // Audio recording methods
+  // --- AUDIO RECORDING UI LOGIC ---
+
   startRecording(): void {
     this.isRecording = true;
     this.audioBlob = null;
     this.audioData = [];
     this.recordingDuration = 0;
     this.recordingTimer = setInterval(() => this.recordingDuration++, 1000);
-    
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.mediaStream = stream;
       this.input = this.audioContext.createMediaStreamSource(stream);
-
       const bufferSize = 4096;
       this.recorder = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
       this.recorder.onaudioprocess = (e: AudioProcessingEvent) => {
@@ -479,24 +481,19 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   stopRecording(): void {
     if (!this.isRecording) return;
     this.isRecording = false;
-    
     if (this.recordingTimer) {
       clearInterval(this.recordingTimer);
       this.recordingTimer = null;
     }
-    
     if (this.mediaStream) {
       this.mediaStream.getTracks().forEach((track) => track.stop());
     }
-    
     if (this.input) {
       this.input.disconnect();
     }
-    
     if (this.recorder) {
       this.recorder.disconnect();
     }
-
     const flat = Float32Array.from(
       (this.audioData as Float32Array[]).flatMap((arr) => Array.from(arr))
     );
@@ -513,13 +510,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   playPreview(): void {
     if (!this.audioBlob) return;
-
     if (this.currentAudio) {
       this.currentAudio.pause();
       this.currentAudio = null;
       this.currentPlayingIndex = null;
     }
-
     const audio = new Audio(URL.createObjectURL(this.audioBlob));
     audio.onended = () => {
       // Reset when preview finished playing
@@ -538,15 +533,22 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   sendAudio(): void {
-    if (!this.audioBlob || !this.currentChatId) return;
-    
+    if (!this.audioBlob || !this.currentChatId || this.isSending) return;
+    if (this.sendTimeout) {
+      clearTimeout(this.sendTimeout);
+    }
+    this.isSending = true;
+    this.isSendingText = false; 
+    this.sendTimeout = setTimeout(() => {
+      console.warn('Audio send timeout reached. Resetting UI.');
+      this.isSending = false;
+    }, this.AUDIO_SEND_TIMEOUT_DURATION);
     const localId = Date.now().toString() + Math.random().toString().slice(2);
     const formData = new FormData();
     formData.append('file', this.audioBlob, 'recording.wav');
     formData.append('senderUsername', this.currentUser.username);
     formData.append('chatId', this.currentChatId);
     formData.append('localId', localId);
-  
     // Add the audio message to the chat immediately
     const localMsg = {
       senderUsername: this.currentUser.username,
@@ -558,7 +560,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       isProcessed: false,
       chatId: this.currentChatId
     };
-  
     // Read the blob as base64 for local playback
     const reader = new FileReader();
     reader.onload = () => {
@@ -569,24 +570,54 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       }
     };
     reader.readAsDataURL(this.audioBlob);
-  
     this.messageService.sendAudio(formData).subscribe({
       next: () => {
+        clearTimeout(this.sendTimeout);
+        this.sendTimeout = null;
         this.audioBlob = null;
+        this.isSending = false;
         this.isRecording = false;
+        this.shouldScrollToBottom = true;
       },
       error: (error) => {
         console.error('Error sending audio:', error);
+        clearTimeout(this.sendTimeout);
+        this.sendTimeout = null;
+        this.isSending = false;
         const idx = this.messages.findIndex(m => m.localId === localId);
         if (idx !== -1) {
           this.messages[idx].translatedText = '(Failed to send audio)';
           this.messages[idx].pending = false;
         }
-        this.snackBar.open('Failed to send audio message', 'Dismiss', { duration: 3000 });
+        this.snackBar.open('Failed to send audio message. Please try again.', 'Dismiss', {
+          duration: 4000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+          panelClass: ['error-snackbar']
+        });
       }
     });
-    this.shouldScrollToBottom = true;
   }
+
+  // --- Enhanced send button disable & tooltip UI from main branch ---
+  isSendButtonDisabled(): boolean {
+    // Disable if loading, sending, recording, an audio blob exists, or no text is entered.
+    return this.loading || this.isSending || this.isRecording || !!this.audioBlob || !this.newMessage.trim();
+  }
+
+  getSendButtonTooltip(): string {
+    if (this.isRecording) {
+      return 'Recording in progress...';
+    }
+    if (this.isSending) {
+      return 'Sending message...';
+    }
+    if (!this.newMessage.trim() && !this.audioBlob) {
+      return 'Type a message or record audio to send';
+    }
+    return 'Send message';
+  }
+  // ---------------------------------------------------------------
 
   // Audio playback methods
   playOrPauseAudio(base64: string, idx: number): void {
@@ -596,35 +627,29 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.currentAudio = null;
       return;
     }
-
     if (this.currentAudio) {
       this.currentAudio.pause();
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
       this.currentPlayingIndex = null;
     }
-
     const audioBlob = this.signalRService.base64ToBlob(base64, 'audio/wav');
     const audioUrl = URL.createObjectURL(audioBlob);
     const audio = new Audio(audioUrl);
-
     audio.onloadedmetadata = () => {
       if (!this.messages[idx].audioDuration || this.messages[idx].audioDuration === 0) {
         this.messages[idx].audioDuration = audio.duration;
       }
     };
-
     audio.onended = () => {
       this.currentPlayingIndex = null;
       this.currentAudio = null;
     };
-
     audio.onerror = () => {
       this.currentPlayingIndex = null;
       this.currentAudio = null;
       this.snackBar.open('Failed to play audio', 'Dismiss', { duration: 3000 });
     };
-
     this.currentPlayingIndex = idx;
     this.currentAudio = audio;
     audio.play().catch((error) => {
@@ -645,10 +670,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
-  // Language and settings methods
   openLanguageDialog(): void {
     if (!this.currentUser) return;
-    
     this.languageService.getLanguages().subscribe({
       next: (languages) => {
         const dialogRef = this.dialog.open(LanguageDialogComponent, {
@@ -660,7 +683,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
             languages: languages,
           },
         });
-
         dialogRef.afterClosed().subscribe((result) => {
           if (result && result !== this.currentUser.languageCode) {
             this.updateUserLanguage(result);
@@ -694,12 +716,13 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.snackBar.open('Successfully logged out!', 'Dismiss', {
       duration: 4000,
       verticalPosition: 'top',
-      horizontalPosition: 'center'
+      horizontalPosition: 'center',
+      panelClass: ['success-snackbar'],
+      announcementMessage: 'You have been logged out successfully'
     });
     this.router.navigate(['/login']);
   }
 
-  // WAV encoding utility
   private encodeWAV(samples: Float32Array, sampleRate: number): Blob {
     function floatTo16BitPCM(output: DataView, offset: number, input: Float32Array): void {
       for (let i = 0; i < input.length; i++, offset += 2) {
@@ -707,11 +730,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
       }
     }
-
     const buffer = new ArrayBuffer(44 + samples.length * 2);
     const view = new DataView(buffer);
-
-    // RIFF identifier
     [0x52, 0x49, 0x46, 0x46].forEach((b, i) => view.setUint8(i, b));
     view.setUint32(4, 36 + samples.length * 2, true);
     [0x57, 0x41, 0x56, 0x45].forEach((b, i) => view.setUint8(8 + i, b));
@@ -725,9 +745,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     view.setUint16(34, 16, true);
     [0x64, 0x61, 0x74, 0x61].forEach((b, i) => view.setUint8(36 + i, b));
     view.setUint32(40, samples.length * 2, true);
-
     floatTo16BitPCM(view, 44, samples);
-
     return new Blob([view], { type: 'audio/wav' });
   }
 }

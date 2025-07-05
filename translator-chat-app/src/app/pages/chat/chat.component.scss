@@ -1,23 +1,25 @@
 :host {
   display: block;
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for Android */
+  height: 100dvh;
   background: linear-gradient(135deg, #0396ff 0%, #ab82ff 100%);
   padding: 20px;
-  overflow: hidden; // Prevent scrollbar on the host component
-  position: fixed; // This prevents body scrolling behind the component
+  overflow: hidden;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  /* Android-specific viewport handling */
+  min-height: 100vh;
+  min-height: 100dvh;
   min-height: -webkit-fill-available;
-  min-height: fill-available;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
 }
 
 .chat-container {
   height: calc(100vh - 40px);
-  height: calc(100dvh - 40px); /* Dynamic viewport height for Android */
+  height: calc(100dvh - 40px);
   display: flex;
   flex-direction: column;
   max-width: 1000px;
@@ -25,7 +27,11 @@
   background-color: #fff;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
-  overflow: hidden; // Prevent scrollbar on container
+  overflow: hidden;
+  position: relative;
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  contain: layout style paint;
 }
 
 /* Header styles */
@@ -37,6 +43,7 @@
   background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   z-index: 10;
+  flex-shrink: 0;
 }
 
 .user-info {
@@ -70,6 +77,10 @@
     align-items: center;
     font-size: 13px;
     color: #65676b;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 4px 8px;
+    border-radius: 16px;
 
     mat-icon {
       font-size: 16px;
@@ -77,10 +88,25 @@
       width: 16px;
       margin-right: 4px;
     }
+
+    .edit-icon {
+      font-size: 14px;
+      margin-left: 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover {
+      color: #6366f1;
+      background-color: rgba(99, 102, 241, 0.08);
+
+      .edit-icon {
+        opacity: 1;
+      }
+    }
   }
 }
 
-/* Logout button style */
 .header-actions {
   .logout-button {
     color: #6366f1;
@@ -101,11 +127,13 @@
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
-  /* Android keyboard handling */
-  height: 0; /* Allow flex to determine height */
-  min-height: 0; /* Allow shrinking when keyboard appears */
+  height: 0;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  transform: translateZ(0);
+  will-change: scroll-position;
 
-  // Custom scrollbar styling
   &::-webkit-scrollbar {
     width: 6px;
     background-color: transparent;
@@ -134,7 +162,7 @@
 .message-wrapper {
   display: flex;
   margin-bottom: 16px;
-  max-width: 65%; // Reduced from 80%
+  max-width: 65%;
 
   &.own-message {
     align-self: flex-end;
@@ -186,11 +214,11 @@
 }
 
 .message-bubble {
-  padding: 12px 16px; // Reduced from 16px 20px
+  padding: 12px 16px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: relative;
   max-width: calc(100% - 40px);
-  min-width: 100px; // Reduced from 120px
+  min-width: 100px;
 }
 
 .message-sender {
@@ -201,8 +229,8 @@
 }
 
 .message-content {
-  font-size: 15px; // Reduced from 16px
-  line-height: 1.4; // Reduced from 1.5
+  font-size: 15px;
+  line-height: 1.4;
   word-break: break-word;
 }
 
@@ -301,7 +329,7 @@
   }
 }
 
-/* Enhanced Input area with recording UI */
+/* Input area */
 .message-input-container {
   display: flex;
   align-items: center;
@@ -311,10 +339,10 @@
   position: relative;
   gap: 12px;
   min-height: 80px;
-  /* Android keyboard viewport handling */
-  padding-bottom: max(16px, env(keyboard-inset-height, 16px));
-  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+  flex-shrink: 0;
   z-index: 1000;
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+  isolation: isolate;
 }
 
 .input-wrapper {
@@ -399,29 +427,6 @@
 
   ::ng-deep .mat-mdc-form-field-label {
     display: none !important;
-  }
-}
-
-/* Enhanced audio button */
-.audio-button {
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  flex-shrink: 0;
-
-  &:hover:not([disabled]) {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  &[color="warn"] {
-    animation: ripple 1.5s infinite;
-  }
-
-  .pulse-icon {
-    animation: pulse-opacity 1.5s infinite;
   }
 }
 
@@ -553,6 +558,21 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
 
+      &:disabled {
+        background-color: #f1f5f9 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+        transform: none;
+
+        mat-icon {
+          color: #94a3b8 !important;
+        }
+
+        &:hover {
+          background-color: #f1f5f9 !important;
+        }
+      }
+
       mat-icon {
         font-size: 18px;
         width: 18px;
@@ -568,9 +588,25 @@
 
       &.send-btn {
         background: #6366f1;
+        position: relative;
+        overflow: hidden;
 
         mat-icon {
           color: white;
+        }
+
+        &.sending {
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+          cursor: progress !important;
+          opacity: 0.65;
+
+          .sophisticated-spinner {
+            opacity: 1 !important;
+          }
+
+          mat-icon {
+            opacity: 0 !important;
+          }
         }
       }
 
@@ -581,27 +617,27 @@
   }
 }
 
-/* Enhanced send button - CONSOLIDATED */
 .send-button {
   width: 48px;
   height: 48px;
   min-width: 48px;
   border-radius: 50%;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s ease;
   box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Mobile touch optimizations */
+  position: relative;
+  overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   -webkit-touch-callout: none;
 
   mat-icon {
     margin: 0;
-    transform: rotate(-20deg) translateX(1px); // Add slight X translation to center better
-    transition: transform 0.1s ease;
+    transform: rotate(-20deg) translateX(1px);
+    transition: transform 0.1s ease, opacity 0.2s ease;
     font-size: 20px;
     width: 20px;
     height: 20px;
@@ -614,7 +650,23 @@
     transform: scale(1.05);
 
     mat-icon {
-      transform: rotate(0) translateX(0); // Reset translation when active
+      transform: rotate(-20deg) translateX(0);
+    }
+  }
+
+  &.send-button-sending {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    color: white !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    cursor: progress !important;
+
+    .sophisticated-spinner {
+      opacity: 1 !important;
+    }
+
+    mat-icon {
+      opacity: 0 !important;
     }
   }
 
@@ -624,184 +676,110 @@
   }
 
   &:disabled {
-    background-color: #e2e5e9;
-    color: #b0b0b0;
-    box-shadow: none;
-    transform: none;
-    transition: none;
-  }
-}
-
-/* Enhanced audio visualizer container */
-.audio-visualizer-container {
-  display: flex;
-  flex-direction: column;
-  background-color: rgba(244, 67, 54, 0.05);
-  padding: 12px 16px;
-  border-radius: 20px;
-  min-width: 180px;
-  margin-left: 16px;
-}
-
-.audio-visualizer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 28px;
-
-  .visualizer-bar {
-    width: 4px;
-    background: linear-gradient(to top, #f44336, #ff7961);
-    border-radius: 2px;
-    height: 5px;
-    animation: sound 0.8s infinite alternate;
-
-    &:nth-child(1) {
-      animation-duration: 0.7s;
-    }
-    &:nth-child(2) {
-      animation-duration: 0.5s;
-    }
-    &:nth-child(3) {
-      animation-duration: 0.9s;
-    }
-    &:nth-child(4) {
-      animation-duration: 0.6s;
-    }
-    &:nth-child(5) {
-      animation-duration: 0.4s;
-    }
-  }
-}
-
-/* Enhanced animations */
-@keyframes ripple {
-  0% {
-    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(244, 67, 54, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
-  }
-}
-
-@keyframes pulse-opacity {
-  0% {
-    opacity: 1;
-  }
-  50% {
+    background-color: #e2e5e9 !important;
+    color: #b0b0b0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: not-allowed !important;
     opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
+    pointer-events: none;
 
-@keyframes pulse-scale {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.4);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+    mat-icon {
+      color: #b0b0b0 !important;
+      transform: none !important;
+      opacity: 0.5;
+    }
 
-@keyframes sound {
-  0% {
-    height: 5px;
-    opacity: 0.35;
-  }
-  100% {
-    height: 28px;
-    opacity: 0.95;
-  }
-}
-
-.language-indicator {
-  display: flex;
-  align-items: center;
-  font-size: 13px;
-  color: #65676b;
-  cursor: pointer;
-  transition: color 0.2s;
-  padding: 4px 8px;
-  border-radius: 16px;
-
-  mat-icon {
-    font-size: 16px;
-    height: 16px;
-    width: 16px;
-    margin-right: 4px;
-  }
-
-  .edit-icon {
-    font-size: 14px;
-    margin-left: 4px;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  &:hover {
-    color: #6366f1;
-    background-color: rgba(99, 102, 241, 0.08);
-
-    .edit-icon {
-      opacity: 1;
+    &:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      background-color: #e2e5e9 !important;
     }
   }
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.8;
+/* Audio button */
+.audio-button {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+
+  &:hover:not([disabled]) {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
   }
-  70% {
-    transform: scale(1.5);
-    opacity: 0;
+
+  &[color="warn"] {
+    animation: ripple 1.5s infinite;
   }
-  100% {
-    transform: scale(0.8);
-    opacity: 0;
+
+  .pulse-icon {
+    animation: pulse-opacity 1.5s infinite;
   }
 }
 
-@keyframes sound-wave {
-  0% {
-    transform: scaleY(0.5);
+/* Sophisticated spinner */
+.sophisticated-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.spinner-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.spinner-ring-1 {
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-right: 2px solid rgba(255, 255, 255, 0.7);
+  animation: sophisticated-spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.spinner-ring-2 {
+  border: 2px solid transparent;
+  border-bottom: 2px solid white;
+  border-left: 2px solid rgba(255, 255, 255, 0.5);
+  animation: sophisticated-spin 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
+  transform: scale(0.8);
+}
+
+.spinner-ring-3 {
+  border: 1px solid transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  animation: sophisticated-spin 0.8s linear infinite;
+  transform: scale(0.6);
+}
+
+/* Input field disabled state */
+.message-field {
+  ::ng-deep .mat-mdc-input-element:disabled {
+    color: #9ca3af !important;
+    -webkit-text-fill-color: #9ca3af !important;
+    opacity: 0.7;
+    cursor: not-allowed;
   }
-  50% {
-    transform: scaleY(1);
-  }
-  100% {
-    transform: scaleY(0.5);
+
+  ::ng-deep .mat-mdc-input-element:disabled::placeholder {
+    color: #d1d5db !important;
+    -webkit-text-fill-color: #d1d5db !important;
   }
 }
 
-@keyframes equalizer {
-  0% {
-    opacity: 0.8;
-    transform: scale(0.96);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.04);
-  }
-  100% {
-    opacity: 0.8;
-    transform: scale(0.96);
-  }
-}
-
-/* Audio message styles */
+/* Audio message components */
 .audio-message-container {
   display: flex;
   align-items: center;
@@ -836,45 +814,6 @@
 
   &:nth-child(odd) {
     height: 55%;
-  }
-}
-.wave-bar:nth-child(2) {
-  animation-delay: -1.1s;
-}
-.wave-bar:nth-child(3) {
-  animation-delay: -1s;
-}
-.wave-bar:nth-child(4) {
-  animation-delay: -0.9s;
-}
-.wave-bar:nth-child(5) {
-  animation-delay: -0.8s;
-}
-.wave-bar:nth-child(6) {
-  animation-delay: -0.7s;
-}
-.wave-bar:nth-child(7) {
-  animation-delay: -0.6s;
-}
-.wave-bar:nth-child(8) {
-  animation-delay: -0.5s;
-}
-.wave-bar:nth-child(9) {
-  animation-delay: -0.4s;
-}
-.wave-bar:nth-child(10) {
-  animation-delay: -0.3s;
-}
-
-@keyframes wave {
-  0%,
-  100% {
-    height: 40%;
-    opacity: 0.6;
-  }
-  50% {
-    height: 100%;
-    opacity: 0.9;
   }
 }
 
@@ -947,18 +886,10 @@
   color: #1976d2;
   border-radius: 50%;
   transition: background 0.2s;
-}
-.audio-play-btn:hover {
-  background: #e3eafc;
-}
 
-.audio-duration {
-  background: #f0f4fa;
-  color: #1976d2;
-}
-
-.audio-info {
-  color: #333;
+  &:hover {
+    background: #e3eafc;
+  }
 }
 
 /* Typing indicator */
@@ -996,6 +927,7 @@
   height: 8px;
   position: relative;
 }
+
 .dot-typing::before,
 .dot-typing::after,
 .dot-typing span {
@@ -1009,32 +941,23 @@
   top: 0;
   animation: typing-bounce 1.2s infinite;
 }
+
 .dot-typing span {
   left: 9px;
   animation-delay: 0.2s;
 }
+
 .dot-typing::before {
   left: 0;
   animation-delay: 0s;
 }
+
 .dot-typing::after {
   left: 18px;
   animation-delay: 0.4s;
 }
-@keyframes typing-bounce {
-  0%,
-  80%,
-  100% {
-    transform: scale(0.7);
-    opacity: 0.7;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 
-/* Loading spinner container */
+/* Loading components */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -1052,7 +975,6 @@
   font-weight: 500;
 }
 
-/* Sending message overlay */
 .sending-progress-overlay {
   position: fixed;
   bottom: 100px;
@@ -1067,11 +989,11 @@
   color: white;
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
-.sending-progress-overlay span {
-  font-size: 14px;
-  font-weight: 500;
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
 }
 
 .loading-more {
@@ -1097,29 +1019,178 @@
   border-radius: 8px;
 }
 
+/* Skeletons */
 app-message-skeleton {
   display: block;
   margin: 8px 0;
+}
+
+/* Animations */
+@keyframes sophisticated-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1);
+  }
+  75% {
+    transform: rotate(270deg) scale(0.9);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes sound-wave {
+  0% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.5);
+  }
+}
+
+@keyframes equalizer {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(244, 67, 54, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+@keyframes pulse-opacity {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    height: 40%;
+    opacity: 0.6;
+  }
+  50% {
+    height: 100%;
+    opacity: 0.9;
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.7);
+    opacity: 0.7;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Generate wave animation delays
+@for $i from 2 through 10 {
+  .wave-bar:nth-child(#{$i}) {
+    animation-delay: #{-1.3 + ($i * 0.1)}s;
+  }
+}
+
+/* Base touch optimizations */
+* {
+  touch-action: manipulation;
+}
+
+input,
+textarea,
+select {
+  touch-action: auto;
+}
+
+button,
+.mat-mdc-button,
+.mat-mdc-fab,
+.mat-mdc-mini-fab,
+.mat-mdc-icon-button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   :host {
     padding: 10px;
-    /* Android viewport fixes */
     height: 100vh;
     height: 100dvh;
+    height: -webkit-fill-available;
     min-height: 100vh;
     min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   .chat-container {
     height: calc(100vh - 20px);
     height: calc(100dvh - 20px);
+    height: calc(-webkit-fill-available - 20px);
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    max-height: calc(-webkit-fill-available - 20px);
     max-width: 100%;
+    border-radius: 8px;
   }
 
-  /* Header adjustments for mobile */
   .chat-header {
     padding: 8px 12px;
     min-height: 60px;
@@ -1158,18 +1229,11 @@ app-message-skeleton {
     height: 36px;
   }
 
-  /* Messages area for mobile */
   .messages-area {
     padding: 8px 12px;
-    -webkit-overflow-scrolling: touch;
-    /* Android keyboard adaptation */
-    flex: 1 1 0;
-    min-height: 0;
-    /* Ensure proper scrolling when keyboard appears */
-    scroll-padding-bottom: 100px;
+    padding-bottom: 20px;
   }
 
-  /* Message bubbles adjustments */
   .message-wrapper {
     margin-bottom: 12px;
     max-width: 90%;
@@ -1194,10 +1258,6 @@ app-message-skeleton {
     margin-bottom: 3px;
   }
 
-  .message-content {
-    font-size: 15px;
-  }
-
   .message-time {
     font-size: 10px;
     margin-top: 4px;
@@ -1209,7 +1269,6 @@ app-message-skeleton {
     }
   }
 
-  /* Audio message adjustments */
   .audio-message-container {
     flex-direction: row;
     align-items: center;
@@ -1243,22 +1302,18 @@ app-message-skeleton {
     line-height: 1.2;
   }
 
-  /* Input area for mobile with Android keyboard support */
   .message-input-container {
     padding: 12px 16px;
     gap: 10px;
     min-height: 76px;
-    flex-wrap: nowrap;
-    align-items: center;
-    /* Android keyboard handling */
     position: sticky;
     bottom: 0;
-    padding-bottom: max(12px, env(keyboard-inset-height, 12px));
-    z-index: 1001;
     background-color: white;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-    /* Allow controls to extend beyond container */
-    overflow: visible;
+    z-index: 1001;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .input-wrapper {
@@ -1268,35 +1323,20 @@ app-message-skeleton {
   }
 
   .message-field {
-    ::ng-deep .mat-mdc-form-field-infix {
-      padding-top: 12px;
-      padding-bottom: 12px;
-    }
-
-    ::ng-deep .mat-mdc-form-field-flex {
-      min-height: 48px;
-    }
-
-    ::ng-deep .mat-mdc-text-field-wrapper {
-      padding: 0 12px;
-    }
-
     ::ng-deep .mat-mdc-input-element {
-      font-size: 16px; // Prevent zoom on Android
-      /* Android keyboard improvements */
-      -webkit-appearance: none;
-      transform: translateZ(0);
+      font-size: 16px; // Prevent zoom on iOS
+      -webkit-user-select: text;
+      user-select: text;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: default;
     }
   }
 
-  /* Enhanced audio recorder for Android visibility */
   .audio-recorder {
     padding: 0;
     flex-shrink: 0;
-    /* Ensure controls are always visible */
     position: relative;
     z-index: 100;
-    /* Ensure recorder doesn't get clipped */
     overflow: visible;
     contain: none;
 
@@ -1309,7 +1349,6 @@ app-message-skeleton {
       margin-left: 8px;
       padding: 4px 8px;
       border-radius: 16px;
-      /* Ensure status is visible */
       background: rgba(239, 83, 80, 0.15);
       backdrop-filter: blur(4px);
 
@@ -1327,86 +1366,67 @@ app-message-skeleton {
       }
     }
 
-    /* Enhanced recording controls for Android */
     .recording-controls {
-      display: flex !important; /* Force display on Android */
-      align-items: center;
-      margin-left: 8px;
-      gap: 8px;
-      /* Ensure controls are above other elements */
+      display: flex;
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      z-index: 9999;
       position: relative;
-      z-index: 200;
-      /* Make controls more visible on Android */
-      background: rgba(255, 255, 255, 0.95);
-      padding: 4px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
       border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      /* Force hardware acceleration */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 6px;
+      margin-left: 8px;
       will-change: auto;
       transform: translateZ(0);
-      backface-visibility: visible;
-      -webkit-transform: translate3d(0, 0, 0);
-      transform: translate3d(0, 0, 0);
 
       .control-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: none;
-        display: flex !important; /* Force display */
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        /* Ensure buttons are touchable on Android */
-        min-width: 40px;
-        min-height: 40px;
-        /* Ensure buttons are interactive */
-        pointer-events: auto !important;
+        display: flex;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
         touch-action: manipulation;
-        /* Prevent any CSS that might hide buttons */
-        visibility: visible !important;
-        opacity: 1 !important;
+        -webkit-tap-highlight-color: transparent;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: transform 0.1s ease;
 
-        &:hover,
         &:active {
-          transform: scale(1.1);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+          transform: scale(0.95);
         }
 
         mat-icon {
           font-size: 18px;
           width: 18px;
           height: 18px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
       }
     }
   }
 
-  /* Audio button adjustments */
   .audio-button {
     width: 44px !important;
     height: 44px !important;
     min-width: 44px;
     flex-shrink: 0;
-    /* Mobile touch optimizations */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     transition: transform 0.1s ease;
   }
 
-  /* Send button mobile optimizations */
   .send-button {
     width: 44px;
     height: 44px;
     min-width: 44px;
-    /* Mobile-specific optimizations */
     transition: transform 0.05s ease;
-    -webkit-transform: translateZ(0);
     transform: translateZ(0);
 
     mat-icon {
@@ -1428,28 +1448,18 @@ app-message-skeleton {
     }
   }
 
-  /* Audio visualizer adjustments */
-  .audio-visualizer-container {
-    min-width: 150px;
-    margin-left: 12px;
-    padding: 8px 12px;
-  }
-
-  /* Date divider */
   .date-divider {
     font-size: 11px;
     margin: 12px 0 8px;
     padding: 3px 8px;
   }
 
-  /* Loading indicators */
   .loading-more,
   .no-more-messages {
     padding: 8px;
     font-size: 12px;
   }
 
-  /* Typing indicator adjustments */
   .typing-bubble {
     margin-bottom: 6px;
   }
@@ -1510,7 +1520,6 @@ app-message-skeleton {
     min-width: 70px;
   }
 
-  /* Input area for very small screens */
   .message-input-container {
     padding: 10px 12px;
     gap: 8px;
@@ -1567,41 +1576,9 @@ app-message-skeleton {
   .send-button mat-icon {
     transform: rotate(-20deg) translateX(0.5px);
   }
-
-  .audio-visualizer-container {
-    min-width: 120px;
-    margin-left: 8px;
-    padding: 6px 10px;
-  }
 }
 
-/* Tablet adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .chat-container {
-    max-width: 100%;
-  }
-
-  .messages-area {
-    padding: 12px 16px;
-  }
-
-  .message-wrapper {
-    max-width: 85%;
-  }
-
-  .message-bubble {
-    padding: 18px 22px;
-    font-size: 16px;
-    line-height: 1.5;
-  }
-
-  .message-input-container {
-    padding: 14px 18px;
-    gap: 14px;
-  }
-}
-
-/* Landscape mobile adjustments */
+/* Landscape mobile */
 @media (max-width: 768px) and (orientation: landscape) {
   :host {
     padding: 5px;
@@ -1658,212 +1635,128 @@ app-message-skeleton {
   }
 }
 
-/* Google Pixel specific fixes */
-@media screen and (-webkit-device-pixel-ratio: 2.625),
-  screen and (-webkit-device-pixel-ratio: 3),
-  screen and (device-width: 411px) and (device-height: 731px),
-  screen and (device-width: 393px) and (device-height: 851px) {
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  :host {
+    height: 100vh;
+    height: 100dvh;
+    height: -webkit-fill-available;
+  }
+
   .chat-container {
-    height: calc(100vh - 20px);
-    height: calc(100svh - 20px);
-    min-height: calc(100vh - 20px);
+    height: calc(100vh - 40px);
+    height: calc(100dvh - 40px);
+    height: calc(-webkit-fill-available - 40px);
   }
 
-  .message-input-container {
-    position: sticky;
-    bottom: 0;
-    background: white;
-    border-top: 1px solid #eaeaea;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1003;
-  }
+  @media (max-width: 768px) {
+    :host {
+      padding: 10px;
+      height: 100vh;
+      height: 100dvh;
+      height: -webkit-fill-available;
+    }
 
-  .messages-area {
-    overscroll-behavior: contain;
-    scroll-snap-type: none;
-  }
+    .chat-container {
+      height: calc(100vh - 20px);
+      height: calc(100dvh - 20px);
+      height: calc(-webkit-fill-available - 20px);
+      position: relative;
+    }
 
-  .audio-recorder .recording-controls {
-    position: relative;
-    z-index: 10000;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    .message-input-container {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid #eaeaea;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 10000;
+      padding: 12px 16px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+      display: flex;
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      isolation: isolate;
+    }
 
-    .control-btn {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(0, 0, 0, 0.05);
+    .send-button:disabled {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .message-field ::ng-deep .mat-mdc-input-element:disabled {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: text;
+      user-select: text;
     }
   }
 }
 
-/* Android Chrome specific improvements */
-@supports (-webkit-appearance: none) {
+/* Android Chrome specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
   @media (max-width: 768px) {
     .message-input-container {
-      position: -webkit-sticky;
       position: sticky;
       bottom: 0;
       z-index: 1002;
+      padding-bottom: max(12px, env(keyboard-inset-height, 12px));
     }
 
     .messages-area {
       -webkit-overflow-scrolling: touch;
-      transform: translate3d(0, 0, 0);
+      overscroll-behavior: contain;
       scroll-padding-bottom: 100px;
     }
 
     .audio-recorder .recording-controls {
-      display: flex !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      transform: none !important;
+      display: flex;
+      visibility: visible;
+      opacity: 1;
+      transform: none;
       z-index: 9999;
       position: relative;
     }
-
-    .audio-recorder .control-btn {
-      pointer-events: auto !important;
-      touch-action: manipulation;
-      display: flex !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
   }
 }
 
-/* Android WebView specific fixes */
-@media screen and (max-width: 768px) {
-  .chat-container {
-    contain: layout style paint;
-    will-change: height;
-  }
-
-  .message-input-container {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
-}
-
-/* Touch-friendly improvements */
+/* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
-  .message-input-container {
-    padding-bottom: max(env(safe-area-inset-bottom, 12px), env(keyboard-inset-height, 12px));
-  }
-
-  .message-field {
-    ::ng-deep .mat-mdc-input-element {
-      font-size: 16px;
-      -webkit-user-select: text;
-      user-select: text;
-      -webkit-tap-highlight-color: transparent;
-    }
-  }
-
-  .send-button,
-  .audio-button {
+  button,
+  .mat-mdc-button,
+  .mat-mdc-fab,
+  .mat-mdc-mini-fab,
+  .mat-mdc-icon-button {
     transition: none !important;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
 
     &:active {
-      transform: scale(0.95) translateZ(0);
+      transform: scale(0.95);
       transition: none;
     }
-
-    &:hover {
-      transform: translateZ(0);
-      box-shadow: initial;
-    }
-
-    mat-icon {
-      transition: none !important;
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-    }
   }
 
-  .audio-recorder .recording-controls {
-    gap: 10px;
-    padding: 6px;
-
-    .control-btn {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
-      transition: none !important;
-      
-      &:active {
-        transform: scale(0.95);
-        transition: none;
-      }
-    }
-  }
-}
-
-/* Ensure proper scrolling performance */
-.messages-area {
-  -webkit-overflow-scrolling: touch;
-  transform: translateZ(0);
-}
-
-/* Prevent text selection on buttons */
-button, .record-btn, .control-btn {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  -webkit-touch-callout: none;
-}
-
-/* Add disabled state for input area */
-.message-input-container.disabled {
-  opacity: 0.7;
-  pointer-events: none;
-  filter: grayscale(30%);
-}
-
-/* Additional mobile optimizations for button responsiveness */
-@media (max-width: 768px) {
-  button {
-    -webkit-tap-highlight-color: transparent !important;
-    touch-action: manipulation !important;
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
-    
-    &:not(.keep-transition) {
-      transition: none !important;
-    }
-    
-    &:active {
-      transform: scale(0.95) translateZ(0) !important;
-      transition: none !important;
-    }
+  .message-field ::ng-deep .mat-mdc-input-element {
+    font-size: 16px;
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: default;
   }
 
-  .mat-mdc-button,
-  .mat-mdc-fab,
-  .mat-mdc-mini-fab,
-  .mat-mdc-icon-button {
-    -webkit-tap-highlight-color: transparent !important;
-    touch-action: manipulation !important;
-    
-    &:not(.keep-transition) {
-      transition: none !important;
-    }
+  .message-input-container {
+    padding-bottom: max(
+      env(safe-area-inset-bottom, 12px),
+      env(keyboard-inset-height, 12px)
+    );
   }
 }

@@ -148,68 +148,111 @@
     <!-- Audio Recorder UI -->
     <div class="audio-recorder">
       <!-- Voice recording button -->
-      <button
-        class="record-btn"
-        [class.recording]="isRecording"
-        [class.has-recording]="audioBlob && !isRecording"
-        (click)="toggleRecording()"
-        matTooltip="{{ isRecording ? 'Stop recording' : 'Record voice message' }}"
-      >
-        <div class="button-content">
-          <mat-icon>{{ isRecording ? "stop" : (audioBlob ? "graphic_eq" : "mic") }}</mat-icon>
-          <span class="pulse-ring" *ngIf="isRecording"></span>
-        </div>
-      </button>
+     <button
+      class="record-btn"
+      [class.recording]="isRecording"
+      [class.has-recording]="audioBlob && !isRecording"
+      [disabled]="isSending"
+      (click)="toggleRecording()"
+      matTooltip="{{ isRecording ? 'Stop recording' : 'Record voice message' }}"
+    >
+      <div class="button-content">
+        <mat-icon>{{ isRecording ? "stop" : (audioBlob ? "graphic_eq" : "mic") }}</mat-icon>
+        <span class="pulse-ring" *ngIf="isRecording"></span>
+      </div>
+    </button>
     
       <!-- Recording status area -->
-      <div class="recording-status" *ngIf="isRecording">
-        <div class="waveform-visualization">
-          <span *ngFor="let bar of [1, 2, 3, 4, 5]" 
-                class="wave-bar"
-                [style.height.px]="15 + (recordingDuration % 3) * 5"></span>
-        </div>
-        <span class="recording-timer">{{ recordingDuration | number:'1.0-0' }}s</span>
+    <div class="recording-status" *ngIf="isRecording">
+      <div class="waveform-visualization">
+        <span *ngFor="let bar of [1, 2, 3, 4, 5]" 
+              class="wave-bar"
+              [style.height.px]="15 + (recordingDuration % 3) * 5"></span>
       </div>
-      
-      <!-- Recording controls -->
-      <div class="recording-controls" *ngIf="audioBlob && !isRecording">
-        <button class="control-btn preview-btn" (click)="playPreview()" matTooltip="Preview">
-          <mat-icon>play_arrow</mat-icon>
-        </button>
-        <button class="control-btn send-btn" (click)="sendAudio()" matTooltip="Send">
-          <mat-icon>send</mat-icon>
-        </button>
-        <button class="control-btn cancel-btn" (click)="cancelRecording()" matTooltip="Cancel">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+      <span class="recording-timer">{{ recordingDuration | number:'1.0-0' }}s</span>
     </div>
+      
+       <!-- Recording controls -->
+     <div class="recording-controls" *ngIf="audioBlob && !isRecording">
+      <button class="control-btn preview-btn" 
+              [disabled]="isSending"
+              (click)="playPreview()" 
+              matTooltip="Preview">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+      <button class="control-btn send-btn" 
+              [disabled]="isSending"
+              (click)="sendAudio()" 
+              [matTooltip]="isSending ? 'Sending audio...' : 'Send audio'"
+              [ngClass]="{ 'sending': isSending && !isSendingText }">
+        <!-- Sophisticated custom spinner when sending audio - add audio-spinner class -->
+        <div class="sophisticated-spinner audio-spinner" *ngIf="isSending && !isSendingText">
+            <div class="spinner-ring spinner-ring-1"></div>
+            <div class="spinner-ring spinner-ring-2"></div>
+            <div class="spinner-ring spinner-ring-3"></div>
+            <div class="spinner-dots">
+              <div class="spinner-dot"></div>
+              <div class="spinner-dot"></div>
+              <div class="spinner-dot"></div>
+              <div class="spinner-dot"></div>
+            </div>
+        </div>
+        <!-- Show send icon when not sending audio -->
+        <mat-icon *ngIf="!(isSending && !isSendingText)">send</mat-icon>
+      </button>
+      <button class="control-btn cancel-btn" 
+              [disabled]="isSending"
+              (click)="cancelRecording()" 
+              matTooltip="Cancel">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
 
     <!-- Text input -->
-    <div class="input-wrapper">
-      <mat-form-field appearance="outline" class="message-field">
-        <input
-          matInput
-          [(ngModel)]="newMessage"
-          placeholder="Type your message..."
-          (ngModelChange)="onTyping()"
-          (keyup.enter)="sendMessage(); stopTypingIndicator()"
-          autocomplete="off"
-        />
-        <mat-icon matSuffix class="hint-icon">chat</mat-icon>
-      </mat-form-field>
-    </div>
+  <div class="input-wrapper">
+    <mat-form-field appearance="outline" class="message-field">
+      <input
+        matInput
+        [(ngModel)]="newMessage"
+        placeholder="Type your message..."
+        [disabled]="isSending"
+        (ngModelChange)="onTyping()"
+        (keyup.enter)="sendMessage(); stopTypingIndicator()"
+        autocomplete="off"
+      />
+      <mat-icon matSuffix class="hint-icon">chat</mat-icon>
+    </mat-form-field>
+  </div>
 
     <!-- Send button -->
-    <button
-      mat-fab
-      color="primary"
-      class="send-button"
-      [ngClass]="{ 'send-button-active': newMessage.trim() }"
-      matTooltip="Send message"
-      (click)="sendMessage()"
-    >
-      <mat-icon>send</mat-icon>
-    </button>
+<button
+  mat-fab
+  color="primary"
+  class="send-button"
+  [ngClass]="{ 
+    'send-button-active': newMessage.trim() && !isSending,
+    'send-button-sending': isSendingText,
+    'send-button-disabled': isSendButtonDisabled()
+  }"
+  [disabled]="isSendButtonDisabled()"
+  [matTooltip]="getSendButtonTooltip()"
+  (click)="sendMessage()"
+>
+  <!-- Sophisticated custom spinner when sending -->
+  <div class="sophisticated-spinner" *ngIf="isSendingText">
+    <div class="spinner-ring spinner-ring-1"></div>
+    <div class="spinner-ring spinner-ring-2"></div>
+    <div class="spinner-ring spinner-ring-3"></div>
+    <div class="spinner-dots">
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+    </div>
   </div>
+  <!-- Show send icon when not sending text -->
+  <mat-icon *ngIf="!isSendingText">send</mat-icon>
+</button>
+</div>
 </div>
