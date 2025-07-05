@@ -48,7 +48,7 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("EnableS
     {
         // Set Swagger UI at the app's root
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-        options.RoutePrefix = string.Empty;
+        options.RoutePrefix = "swagger";
     });
 
 }
